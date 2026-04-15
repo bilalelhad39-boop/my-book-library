@@ -3,33 +3,21 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- The page title will be set dynamically from YAML -->
   <title id="page-title">Loading...</title>
-  <!-- Fonts & Icons -->
+  <!-- Fonts (will be overridden by YAML if provided) -->
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
   <!-- YAML parser -->
   <script src="https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js"></script>
   <style>
-    /* ----- Modern Dark Theme (same as before) ----- */
-    :root {
-      --bg: #0d0d0d;
-      --surface: #161616;
-      --card: #1c1c1c;
-      --border: #2a2a2a;
-      --accent: #c9a84c;
-      --accent2: #e8c97a;
-      --text: #e8e0d0;
-      --muted: #7a7060;
-      --modal-bg: rgba(0,0,0,0.88);
-    }
-
+    /* Base styles — these will be overridden by YAML theme variables */
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'DM Sans', sans-serif;
+      background: var(--bg, #0d0d0d);
+      color: var(--text, #e8e0d0);
+      font-family: var(--body-font, 'DM Sans', sans-serif);
       font-weight: 300;
       min-height: 100vh;
+      transition: background 0.2s;
     }
 
     /* Header */
@@ -39,7 +27,7 @@
       z-index: 100;
       background: rgba(13,13,13,0.92);
       backdrop-filter: blur(16px);
-      border-bottom: 1px solid var(--border);
+      border-bottom: 1px solid var(--border, #2a2a2a);
       padding: 0 1.5rem;
     }
     .header-inner {
@@ -51,14 +39,14 @@
       height: 70px;
     }
     .logo {
-      font-family: 'Playfair Display', serif;
+      font-family: var(--heading-font, 'Playfair Display', serif);
       font-size: 1.5rem;
-      color: var(--accent);
+      color: var(--accent, #c9a84c);
       white-space: nowrap;
     }
     .logo span {
       font-style: italic;
-      color: var(--text);
+      color: var(--text, #e8e0d0);
       opacity: 0.6;
       margin-left: 0.3em;
     }
@@ -72,24 +60,24 @@
       left: 14px;
       top: 50%;
       transform: translateY(-50%);
-      color: var(--muted);
+      color: var(--muted, #7a7060);
     }
     #search {
       width: 100%;
-      background: var(--surface);
-      border: 1px solid var(--border);
+      background: var(--surface, #161616);
+      border: 1px solid var(--border, #2a2a2a);
       border-radius: 8px;
       padding: 10px 14px 10px 42px;
-      color: var(--text);
+      color: var(--text, #e8e0d0);
       font-size: 0.9rem;
       outline: none;
     }
-    #search:focus { border-color: var(--accent); }
-    #search::placeholder { color: var(--muted); }
+    #search:focus { border-color: var(--accent, #c9a84c); }
+    #search::placeholder { color: var(--muted, #7a7060); }
 
     .count-badge {
       font-size: 0.8rem;
-      color: var(--muted);
+      color: var(--muted, #7a7060);
       white-space: nowrap;
     }
 
@@ -101,16 +89,16 @@
     }
     .hero {
       margin-bottom: 2.5rem;
-      border-bottom: 1px solid var(--border);
+      border-bottom: 1px solid var(--border, #2a2a2a);
       padding-bottom: 2rem;
     }
     .hero h1 {
-      font-family: 'Playfair Display', serif;
+      font-family: var(--heading-font, 'Playfair Display', serif);
       font-size: clamp(2.2rem, 5vw, 3.8rem);
       font-weight: 700;
     }
-    .hero h1 em { color: var(--accent); font-style: italic; }
-    .hero p { margin-top: 0.8rem; color: var(--muted); max-width: 500px; }
+    .hero h1 em { color: var(--accent, #c9a84c); font-style: italic; }
+    .hero p { margin-top: 0.8rem; color: var(--muted, #7a7060); max-width: 500px; }
 
     /* Filters */
     .filters {
@@ -124,21 +112,21 @@
       font-size: 0.75rem;
       text-transform: uppercase;
       letter-spacing: 0.12em;
-      color: var(--muted);
+      color: var(--muted, #7a7060);
       margin-right: 0.5rem;
     }
     .filter-btn {
       background: transparent;
-      border: 1px solid var(--border);
-      color: var(--muted);
+      border: 1px solid var(--border, #2a2a2a);
+      color: var(--muted, #7a7060);
       padding: 6px 14px;
       border-radius: 100px;
       font-size: 0.82rem;
       cursor: pointer;
       transition: all 0.2s;
     }
-    .filter-btn:hover { border-color: var(--accent); color: var(--accent); }
-    .filter-btn.active { background: var(--accent); border-color: var(--accent); color: #0d0d0d; font-weight: 500; }
+    .filter-btn:hover { border-color: var(--accent, #c9a84c); color: var(--accent, #c9a84c); }
+    .filter-btn.active { background: var(--accent, #c9a84c); border-color: var(--accent, #c9a84c); color: #0d0d0d; font-weight: 500; }
 
     /* Grid */
     .grid {
@@ -149,9 +137,9 @@
 
     /* Card */
     .card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 12px;
+      background: var(--card, #1c1c1c);
+      border: 1px solid var(--border, #2a2a2a);
+      border-radius: var(--card-radius, 12px);
       overflow: hidden;
       display: flex;
       flex-direction: column;
@@ -160,13 +148,13 @@
     }
     @keyframes fadeUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
     .card:hover {
-      transform: translateY(-4px);
-      border-color: rgba(201,168,76,0.35);
-      box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+      transform: translateY(var(--hover-lift, -4px));
+      border-color: var(--accent-alpha, rgba(201,168,76,0.35));
+      box-shadow: var(--hover-shadow, 0 12px 40px rgba(0,0,0,0.5));
     }
     .card-thumb {
       aspect-ratio: 3/4;
-      background: var(--surface);
+      background: var(--surface, #161616);
       position: relative;
     }
     .card-thumb img {
@@ -186,14 +174,14 @@
       background: linear-gradient(135deg, #1a1a1a, #222);
     }
     .placeholder-icon { font-size: 2.8rem; opacity: 0.25; }
-    .placeholder-title { font-family: 'Playfair Display', serif; font-size: 0.75rem; color: var(--muted); padding: 0 1rem; text-align: center; }
+    .placeholder-title { font-family: var(--heading-font, 'Playfair Display', serif); font-size: 0.75rem; color: var(--muted, #7a7060); padding: 0 1rem; text-align: center; }
     .category-tag {
       position: absolute;
       top: 10px;
       left: 10px;
       background: rgba(13,13,13,0.85);
-      border: 1px solid var(--border);
-      color: var(--accent);
+      border: 1px solid var(--border, #2a2a2a);
+      color: var(--accent, #c9a84c);
       font-size: 0.68rem;
       text-transform: uppercase;
       letter-spacing: 0.1em;
@@ -208,7 +196,7 @@
       flex-direction: column;
     }
     .card-title {
-      font-family: 'Playfair Display', serif;
+      font-family: var(--heading-font, 'Playfair Display', serif);
       font-size: 1.05rem;
       font-weight: 700;
       line-height: 1.3;
@@ -216,13 +204,13 @@
     }
     .card-author {
       font-size: 0.78rem;
-      color: var(--accent);
+      color: var(--accent, #c9a84c);
       margin-bottom: 0.6rem;
       font-weight: 500;
     }
     .card-desc {
       font-size: 0.82rem;
-      color: var(--muted);
+      color: var(--muted, #7a7060);
       line-height: 1.55;
       flex: 1;
       display: -webkit-box;
@@ -238,7 +226,7 @@
     .btn {
       flex: 1;
       padding: 8px 10px;
-      border-radius: 7px;
+      border-radius: var(--button-radius, 7px);
       font-size: 0.8rem;
       font-weight: 500;
       cursor: pointer;
@@ -251,24 +239,24 @@
       transition: all 0.2s;
     }
     .btn-download {
-      background: var(--accent);
-      border: 1px solid var(--accent);
+      background: var(--accent, #c9a84c);
+      border: 1px solid var(--accent, #c9a84c);
       color: #0d0d0d;
     }
-    .btn-download:hover { background: var(--accent2); }
+    .btn-download:hover { background: var(--accent-hover, #e8c97a); }
     .btn-preview {
       background: transparent;
-      border: 1px solid var(--border);
-      color: var(--text);
+      border: 1px solid var(--border, #2a2a2a);
+      color: var(--text, #e8e0d0);
     }
-    .btn-preview:hover { border-color: var(--accent); color: var(--accent); }
+    .btn-preview:hover { border-color: var(--accent, #c9a84c); color: var(--accent, #c9a84c); }
 
     /* Modal */
     .modal-overlay {
       display: none;
       position: fixed;
       inset: 0;
-      background: var(--modal-bg);
+      background: var(--modal-overlay, rgba(0,0,0,0.88));
       z-index: 1000;
       align-items: center;
       justify-content: center;
@@ -277,8 +265,8 @@
     }
     .modal-overlay.open { display: flex; }
     .modal {
-      background: var(--card);
-      border: 1px solid var(--border);
+      background: var(--card, #1c1c1c);
+      border: 1px solid var(--border, #2a2a2a);
       border-radius: 16px;
       width: 100%;
       max-width: 860px;
@@ -289,28 +277,28 @@
     }
     .modal-header {
       padding: 1.2rem 1.5rem;
-      border-bottom: 1px solid var(--border);
+      border-bottom: 1px solid var(--border, #2a2a2a);
       display: flex;
       align-items: flex-start;
       gap: 1rem;
     }
     .modal-meta { flex: 1; }
     .modal-title {
-      font-family: 'Playfair Display', serif;
+      font-family: var(--heading-font, 'Playfair Display', serif);
       font-size: 1.3rem;
     }
-    .modal-author { font-size: 0.82rem; color: var(--accent); margin-top: 0.2rem; }
+    .modal-author { font-size: 0.82rem; color: var(--accent, #c9a84c); margin-top: 0.2rem; }
     .modal-close {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      color: var(--muted);
+      background: var(--surface, #161616);
+      border: 1px solid var(--border, #2a2a2a);
+      color: var(--muted, #7a7060);
       width: 34px;
       height: 34px;
       border-radius: 8px;
       cursor: pointer;
       font-size: 1.1rem;
     }
-    .modal-close:hover { color: var(--text); border-color: var(--accent); }
+    .modal-close:hover { color: var(--text, #e8e0d0); border-color: var(--accent, #c9a84c); }
     .modal-preview {
       flex: 1;
       min-height: 500px;
@@ -322,7 +310,7 @@
     }
     .modal-footer {
       padding: 1rem 1.5rem;
-      border-top: 1px solid var(--border);
+      border-top: 1px solid var(--border, #2a2a2a);
       display: flex;
       justify-content: flex-end;
       gap: 0.75rem;
@@ -334,7 +322,7 @@
       grid-column: 1/-1;
       text-align: center;
       padding: 4rem 1rem;
-      color: var(--muted);
+      color: var(--muted, #7a7060);
     }
     .loading { font-style: italic; }
 
@@ -342,8 +330,8 @@
     .site-footer {
       text-align: center;
       padding: 2.5rem 1rem;
-      color: var(--muted);
-      border-top: 1px solid var(--border);
+      color: var(--muted, #7a7060);
+      border-top: 1px solid var(--border, #2a2a2a);
     }
 
     /* Responsive */
@@ -375,8 +363,8 @@
 </header>
 
 <main>
-  <div class="hero">
-    <h1 id="hero-line1"></h1>
+  <div class="hero" id="hero-section" style="display: none;">
+    <h1 id="hero-heading"></h1>
     <p id="hero-desc"></p>
   </div>
 
@@ -389,7 +377,7 @@
   </div>
 </main>
 
-<footer class="site-footer" id="footer-text"></footer>
+<footer class="site-footer" id="footer-text" style="display: none;"></footer>
 
 <!-- PDF Preview Modal -->
 <div class="modal-overlay" id="modal" role="dialog" aria-modal="true">
@@ -416,7 +404,6 @@
 
 <script>
   (function() {
-    // ----- State -----
     let config = null;
     let books = [];
     let activeCategory = 'All';
@@ -427,41 +414,91 @@
     const filtersEl = document.getElementById('filters');
     const countEl = document.getElementById('count');
 
-    // UI text elements
-    const pageTitle = document.getElementById('page-title');
-    const siteTitle = document.getElementById('site-title');
-    const siteSubtitle = document.getElementById('site-subtitle');
-    const heroLine1 = document.getElementById('hero-line1');
-    const heroDesc = document.getElementById('hero-desc');
-    const footerText = document.getElementById('footer-text');
-
-    // ----- Fetch and parse config.yaml -----
     async function loadConfig() {
       try {
         const response = await fetch('config.yaml');
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
         const yamlText = await response.text();
         config = jsyaml.load(yamlText);
-        
-        // Populate UI texts
-        document.title = config.site.title;
-        siteTitle.textContent = config.site.title;
-        siteSubtitle.textContent = config.site.subtitle || '';
-        heroLine1.innerHTML = config.site.hero.line1 + '<br>' + config.site.hero.line2;
-        heroDesc.textContent = config.site.hero.description;
-        footerText.innerHTML = config.site.footer;
-        
+        applyTheme(config.theme);
+        populateTexts(config.site);
         books = config.books || [];
-        
         initCategories();
         render();
       } catch (error) {
         console.error('Failed to load config.yaml:', error);
-        grid.innerHTML = `<div class="empty"><div class="empty-icon">📚</div><p>Could not load library. Make sure config.yaml exists.</p></div>`;
+        grid.innerHTML = `<div class="empty"><div class="empty-icon">📚</div><p>Ooops! Empty!</p></div>`;
       }
     }
 
-    // ----- Build category filters from YAML (or fallback to unique categories)-----
+    function applyTheme(theme) {
+      if (!theme) return;
+      const root = document.documentElement;
+      
+      // Colors
+      if (theme.background) root.style.setProperty('--bg', theme.background);
+      if (theme.surface) root.style.setProperty('--surface', theme.surface);
+      if (theme.card) root.style.setProperty('--card', theme.card);
+      if (theme.border) root.style.setProperty('--border', theme.border);
+      if (theme.accent) root.style.setProperty('--accent', theme.accent);
+      if (theme.accentHover) root.style.setProperty('--accent-hover', theme.accentHover);
+      if (theme.text) root.style.setProperty('--text', theme.text);
+      if (theme.muted) root.style.setProperty('--muted', theme.muted);
+      if (theme.modalOverlay) root.style.setProperty('--modal-overlay', theme.modalOverlay);
+      
+      // Fonts
+      if (theme.headingFont) root.style.setProperty('--heading-font', theme.headingFont);
+      if (theme.bodyFont) root.style.setProperty('--body-font', theme.bodyFont);
+      
+      // Effects
+      root.style.setProperty('--hover-lift', theme.cardHoverLift === false ? '0' : '-4px');
+      root.style.setProperty('--hover-shadow', theme.cardHoverShadow === false ? 'none' : '0 12px 40px rgba(0,0,0,0.5)');
+      
+      // Radius
+      if (theme.cardRadius) root.style.setProperty('--card-radius', theme.cardRadius);
+      if (theme.buttonRadius) root.style.setProperty('--button-radius', theme.buttonRadius);
+    }
+
+    function populateTexts(site) {
+      // Page title
+      document.title = site.pageTitle || site.title || 'Library';
+      
+      // Header
+      document.getElementById('site-title').textContent = site.title || '';
+      document.getElementById('site-subtitle').textContent = site.subtitle || '';
+      
+      // Search placeholder
+      if (site.searchPlaceholder) {
+        searchInput.placeholder = site.searchPlaceholder;
+      }
+      
+      // Hero section
+      const heroSection = document.getElementById('hero-section');
+      if (site.hero && site.hero.show !== false) {
+        const heading = site.hero.heading || '';
+        const desc = site.hero.description || '';
+        
+        if (heading || desc) {
+          heroSection.style.display = 'block';
+          document.getElementById('hero-heading').innerHTML = heading;
+          document.getElementById('hero-desc').textContent = desc;
+        } else {
+          heroSection.style.display = 'none';
+        }
+      } else {
+        heroSection.style.display = 'none';
+      }
+      
+      // Footer
+      const footerEl = document.getElementById('footer-text');
+      if (site.footer && site.footer.show !== false) {
+        footerEl.style.display = 'block';
+        footerEl.innerHTML = site.footer.text || '';
+      } else {
+        footerEl.style.display = 'none';
+      }
+    }
+
     function initCategories() {
       const categories = config.categories || ['All', ...new Set(books.map(b => b.category))];
       filtersEl.innerHTML = '<span class="filter-label">Filter:</span>';
@@ -479,7 +516,6 @@
       });
     }
 
-    // ----- Render grid based on filters and search -----
     function render() {
       const query = searchTerm.toLowerCase().trim();
       const filtered = books.filter(book => {
@@ -536,8 +572,6 @@
       });
       
       grid.innerHTML = html;
-
-      // Attach preview listeners
       document.querySelectorAll('.btn-preview').forEach(btn => {
         btn.addEventListener('click', () => {
           const book = JSON.parse(btn.dataset.book);
@@ -546,7 +580,6 @@
       });
     }
 
-    // ----- Modal logic -----
     const modal = document.getElementById('modal');
     const modalTitle = document.getElementById('modal-title');
     const modalAuthor = document.getElementById('modal-author');
@@ -573,7 +606,6 @@
     modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
     document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 
-    // ----- Search handling (debounced) -----
     let searchTimeout;
     searchInput.addEventListener('input', () => {
       clearTimeout(searchTimeout);
@@ -583,7 +615,6 @@
       }, 200);
     });
 
-    // ----- Start -----
     loadConfig();
   })();
 </script>
