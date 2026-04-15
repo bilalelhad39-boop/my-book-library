@@ -1,0 +1,18 @@
+[
+  {
+    "title": "The Great Gatsby",
+    "author": "F. Scott Fitzgerald",
+    "description": "A portrait of the Jazz Age in all of its decadence and excess, exploring themes of wealth, love, and the American Dream.",
+    "category": "Fiction",
+    "thumbnail": "thumbnails/gatsby.jpg",
+    "file": "books/great-gatsby.pdf"
+  },
+  {
+    "title": "Dune",
+    "author": "Frank Herbert",
+    "description": "Set in the distant future, a young nobleman must navigate betrayal, politics, and destiny on a desert planet harboring the most valuable substance in the universe.",
+    "category": "Science",
+    "thumbnail": "",
+    "file": "books/dune.pdf"
+  }
+]
