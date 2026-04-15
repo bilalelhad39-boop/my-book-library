@@ -4,12 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title id="page-title">Loading...</title>
-  <!-- Fonts (will be overridden by YAML if provided) -->
+  <!-- Fonts (overridden by YAML theme if provided) -->
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
   <!-- YAML parser -->
   <script src="https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js"></script>
   <style>
-    /* Base styles — these will be overridden by YAML theme variables */
+    /* ----- BASE STYLES (controlled by YAML theme variables) ----- */
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       background: var(--bg, #0d0d0d);
@@ -20,7 +20,6 @@
       transition: background 0.2s;
     }
 
-    /* Header */
     header {
       position: sticky;
       top: 0;
@@ -81,7 +80,6 @@
       white-space: nowrap;
     }
 
-    /* Main */
     main {
       max-width: 1280px;
       margin: 0 auto;
@@ -100,7 +98,6 @@
     .hero h1 em { color: var(--accent, #c9a84c); font-style: italic; }
     .hero p { margin-top: 0.8rem; color: var(--muted, #7a7060); max-width: 500px; }
 
-    /* Filters */
     .filters {
       display: flex;
       flex-wrap: wrap;
@@ -128,7 +125,6 @@
     .filter-btn:hover { border-color: var(--accent, #c9a84c); color: var(--accent, #c9a84c); }
     .filter-btn.active { background: var(--accent, #c9a84c); border-color: var(--accent, #c9a84c); color: #0d0d0d; font-weight: 500; }
 
-    /* Grid */
     .grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
@@ -145,6 +141,7 @@
       flex-direction: column;
       transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s;
       animation: fadeUp 0.4s ease both;
+      cursor: pointer;  /* indicates whole card is clickable */
     }
     @keyframes fadeUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
     .card:hover {
@@ -174,7 +171,13 @@
       background: linear-gradient(135deg, #1a1a1a, #222);
     }
     .placeholder-icon { font-size: 2.8rem; opacity: 0.25; }
-    .placeholder-title { font-family: var(--heading-font, 'Playfair Display', serif); font-size: 0.75rem; color: var(--muted, #7a7060); padding: 0 1rem; text-align: center; }
+    .placeholder-title {
+      font-family: var(--heading-font, 'Playfair Display', serif);
+      font-size: 0.75rem;
+      color: var(--muted, #7a7060);
+      padding: 0 1rem;
+      text-align: center;
+    }
     .category-tag {
       position: absolute;
       top: 10px;
@@ -251,82 +254,94 @@
     }
     .btn-preview:hover { border-color: var(--accent, #c9a84c); color: var(--accent, #c9a84c); }
 
-   /* Modal */
-.modal-overlay {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: var(--modal-overlay, rgba(0,0,0,0.88));
-  z-index: 1000;
-  align-items: center;
-  justify-content: center;
-  padding: 1rem;
-  backdrop-filter: blur(8px);
-}
-.modal-overlay.open { display: flex; }
-.modal {
-  background: var(--card, #1c1c1c);
-  border: 1px solid var(--border, #2a2a2a);
-  border-radius: 16px;
-  width: 100%;
-  max-width: 860px;
-  max-height: 92vh;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-.modal-header {
-  padding: 1.2rem 1.5rem;
-  border-bottom: 1px solid var(--border, #2a2a2a);
-  display: flex;
-  align-items: flex-start;
-  gap: 1rem;
-  flex-shrink: 0;
-}
-.modal-meta { flex: 1; }
-.modal-title {
-  font-family: var(--heading-font, 'Playfair Display', serif);
-  font-size: 1.3rem;
-}
-.modal-author { font-size: 0.82rem; color: var(--accent, #c9a84c); margin-top: 0.2rem; }
-.modal-close {
-  background: var(--surface, #161616);
-  border: 1px solid var(--border, #2a2a2a);
-  color: var(--muted, #7a7060);
-  width: 34px;
-  height: 34px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 1.1rem;
-  flex-shrink: 0;
-}
-.modal-close:hover { color: var(--text, #e8e0d0); border-color: var(--accent, #c9a84c); }
+    /* ----- MODAL (fixed height + preview fills space) ----- */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: var(--modal-overlay, rgba(0,0,0,0.88));
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      backdrop-filter: blur(8px);
+    }
+    .modal-overlay.open { display: flex; }
 
-/* === FIX: make the preview body a flex column and let iframe fill it === */
-.modal-preview {
-  flex: 1;
-  min-height: 0;          /* prevents overflow issues in flex children */
-  display: flex;
-  flex-direction: column;
-}
-.modal-preview iframe {
-  width: 100%;
-  flex: 1;                /* takes all available space */
-  border: none;
-  display: block;
-}
+    .modal {
+      background: var(--card, #1c1c1c);
+      border: 1px solid var(--border, #2a2a2a);
+      border-radius: 16px;
+      width: 100%;
+      max-width: 1000px;
+      height: 95vh;               /* fill most of the screen */
+      max-height: 95vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
 
-.modal-footer {
-  padding: 1rem 1.5rem;
-  border-top: 1px solid var(--border, #2a2a2a);
-  display: flex;
-  justify-content: flex-end;
-  gap: 0.75rem;
-  flex-shrink: 0;
-}
-.modal-footer .btn { flex: none; padding: 9px 20px; }
+    .modal-header {
+      padding: 1.2rem 1.5rem;
+      border-bottom: 1px solid var(--border, #2a2a2a);
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      flex-shrink: 0;
+    }
+    .modal-meta { flex: 1; }
+    .modal-title {
+      font-family: var(--heading-font, 'Playfair Display', serif);
+      font-size: 1.3rem;
+    }
+    .modal-author {
+      font-size: 0.82rem;
+      color: var(--accent, #c9a84c);
+      margin-top: 0.2rem;
+    }
+    .modal-close {
+      background: var(--surface, #161616);
+      border: 1px solid var(--border, #2a2a2a);
+      color: var(--muted, #7a7060);
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+    .modal-close:hover {
+      color: var(--text, #e8e0d0);
+      border-color: var(--accent, #c9a84c);
+    }
 
-    /* Empty/loading states */
+    .modal-preview {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+    }
+    .modal-preview iframe {
+      width: 100%;
+      flex: 1;
+      border: none;
+      display: block;
+    }
+
+    .modal-footer {
+      padding: 1rem 1.5rem;
+      border-top: 1px solid var(--border, #2a2a2a);
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.75rem;
+      flex-shrink: 0;
+    }
+    .modal-footer .btn {
+      flex: none;
+      padding: 9px 20px;
+    }
+
+    /* Empty / loading */
     .empty, .loading {
       grid-column: 1/-1;
       text-align: center;
@@ -335,7 +350,6 @@
     }
     .loading { font-style: italic; }
 
-    /* Footer */
     .site-footer {
       text-align: center;
       padding: 2.5rem 1rem;
@@ -406,7 +420,7 @@
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
         Download
       </a>
-      <button class="btn btn-preview" onclick="closeModal()">Close</button>
+      <button class="btn btn-preview" id="modal-close-footer">Close</button>
     </div>
   </div>
 </div>
@@ -423,6 +437,7 @@
     const filtersEl = document.getElementById('filters');
     const countEl = document.getElementById('count');
 
+    // ----- Load config.yaml & apply theme/texts -----
     async function loadConfig() {
       try {
         const response = await fetch('config.yaml');
@@ -436,15 +451,13 @@
         render();
       } catch (error) {
         console.error('Failed to load config.yaml:', error);
-        grid.innerHTML = `<div class="empty"><div class="empty-icon">📚</div><p>Ooops! Empty!</p></div>`;
+        grid.innerHTML = `<div class="empty"><div class="empty-icon">📚</div><p>Ooops! No Books Found.</p></div>`;
       }
     }
 
     function applyTheme(theme) {
       if (!theme) return;
       const root = document.documentElement;
-      
-      // Colors
       if (theme.background) root.style.setProperty('--bg', theme.background);
       if (theme.surface) root.style.setProperty('--surface', theme.surface);
       if (theme.card) root.style.setProperty('--card', theme.card);
@@ -454,39 +467,24 @@
       if (theme.text) root.style.setProperty('--text', theme.text);
       if (theme.muted) root.style.setProperty('--muted', theme.muted);
       if (theme.modalOverlay) root.style.setProperty('--modal-overlay', theme.modalOverlay);
-      
-      // Fonts
       if (theme.headingFont) root.style.setProperty('--heading-font', theme.headingFont);
       if (theme.bodyFont) root.style.setProperty('--body-font', theme.bodyFont);
-      
-      // Effects
       root.style.setProperty('--hover-lift', theme.cardHoverLift === false ? '0' : '-4px');
       root.style.setProperty('--hover-shadow', theme.cardHoverShadow === false ? 'none' : '0 12px 40px rgba(0,0,0,0.5)');
-      
-      // Radius
       if (theme.cardRadius) root.style.setProperty('--card-radius', theme.cardRadius);
       if (theme.buttonRadius) root.style.setProperty('--button-radius', theme.buttonRadius);
     }
 
     function populateTexts(site) {
-      // Page title
       document.title = site.pageTitle || site.title || 'Library';
-      
-      // Header
       document.getElementById('site-title').textContent = site.title || '';
       document.getElementById('site-subtitle').textContent = site.subtitle || '';
+      if (site.searchPlaceholder) searchInput.placeholder = site.searchPlaceholder;
       
-      // Search placeholder
-      if (site.searchPlaceholder) {
-        searchInput.placeholder = site.searchPlaceholder;
-      }
-      
-      // Hero section
       const heroSection = document.getElementById('hero-section');
       if (site.hero && site.hero.show !== false) {
         const heading = site.hero.heading || '';
         const desc = site.hero.description || '';
-        
         if (heading || desc) {
           heroSection.style.display = 'block';
           document.getElementById('hero-heading').innerHTML = heading;
@@ -498,7 +496,6 @@
         heroSection.style.display = 'none';
       }
       
-      // Footer
       const footerEl = document.getElementById('footer-text');
       if (site.footer && site.footer.show !== false) {
         footerEl.style.display = 'block';
@@ -525,6 +522,7 @@
       });
     }
 
+    // ----- Render cards & attach click‑to‑preview -----
     function render() {
       const query = searchTerm.toLowerCase().trim();
       const filtered = books.filter(book => {
@@ -554,8 +552,11 @@
           </div>
         `;
         
+        // Encode book data for the click handler
+        const bookData = JSON.stringify(book).replace(/'/g, "&apos;").replace(/"/g, '&quot;');
+        
         html += `
-          <div class="card" style="animation-delay: ${i * 0.05}s">
+          <div class="card" data-book='${bookData}' style="animation-delay: ${i * 0.05}s">
             <div class="card-thumb">
               ${thumbHtml}
               ${placeholderHtml}
@@ -570,7 +571,7 @@
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
                   Download
                 </a>
-                <button class="btn btn-preview" data-book='${JSON.stringify(book).replace(/'/g, "&apos;")}'>
+                <button class="btn btn-preview">
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                   Preview
                 </button>
@@ -581,14 +582,36 @@
       });
       
       grid.innerHTML = html;
+
+      // Attach card click listeners (open modal) – but NOT when clicking download button
+      document.querySelectorAll('.card').forEach(card => {
+        card.addEventListener('click', (e) => {
+          // If the click originated from a download link/button, let it handle itself
+          if (e.target.closest('.btn-download')) return;
+          
+          const bookData = card.dataset.book;
+          if (bookData) {
+            const book = JSON.parse(bookData.replace(/&apos;/g, "'").replace(/&quot;/g, '"'));
+            openModal(book);
+          }
+        });
+      });
+
+      // Preview buttons also work (they trigger the same modal)
       document.querySelectorAll('.btn-preview').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const book = JSON.parse(btn.dataset.book);
-          openModal(book);
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation(); // avoid double firing from card click
+          const card = btn.closest('.card');
+          const bookData = card.dataset.book;
+          if (bookData) {
+            const book = JSON.parse(bookData.replace(/&apos;/g, "'").replace(/&quot;/g, '"'));
+            openModal(book);
+          }
         });
       });
     }
 
+    // ----- Modal logic -----
     const modal = document.getElementById('modal');
     const modalTitle = document.getElementById('modal-title');
     const modalAuthor = document.getElementById('modal-author');
@@ -611,10 +634,13 @@
       document.body.style.overflow = '';
     }
 
+    // Close buttons
     document.getElementById('modal-close').addEventListener('click', closeModal);
+    document.getElementById('modal-close-footer').addEventListener('click', closeModal);
     modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
     document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 
+    // ----- Search (debounced) -----
     let searchTimeout;
     searchInput.addEventListener('input', () => {
       clearTimeout(searchTimeout);
@@ -624,6 +650,7 @@
       }, 200);
     });
 
+    // ----- Start -----
     loadConfig();
   })();
 </script>
