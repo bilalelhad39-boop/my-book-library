@@ -622,6 +622,18 @@
       modalTitle.textContent = book.title;
       modalAuthor.textContent = 'by ' + book.author;
       modalFrame.src = book.file;
+      // Inside openModal function, after: modalFrame.src = book.file;
+      modalFrame.onerror = () => {
+        modalFrame.srcdoc = `
+          <html style="background:#0d0d0d;display:flex;align-items:center;justify-content:center;height:100%;font-family:system-ui,sans-serif;">
+            <div style="text-align:center;color:#e8e0d0;">
+              <div style="font-size:4rem;margin-bottom:1rem;">📄❌</div>
+              <h2 style="font-weight:400;margin-bottom:0.5rem;">Preview Unavailable</h2>
+              <p style="color:#7a7060;">The PDF could not be loaded.<br>You can still download it using the button below.</p>
+            </div>
+          </html>
+        `;
+      };
       modalDownload.href = book.file;
       modalDownload.download = book.title.replace(/\s+/g, '_') + '.pdf';
       modal.classList.add('open');
