@@ -1,0 +1,47 @@
+# ----------------------------------------------
+# SITE SETTINGS — change any text here
+# ----------------------------------------------
+site:
+  title: "The Library"
+  subtitle: "/ Collection"
+  hero:
+    line1: "A curated <em>collection</em>"
+    line2: "of books & reads."
+    description: "Browse, preview, and download freely. All titles available at no cost."
+  footer: "Built with ♥ · Hosted on GitHub Pages"
+
+# Categories available in the filter (will appear in this order)
+categories:
+  - All
+  - Fiction
+  - Science
+  - History
+  - Classic
+  - Non-Fiction
+  - Business
+  - Sci-Fi
+
+# ----------------------------------------------
+# BOOKS — add/edit/remove entries here
+# ----------------------------------------------
+books:
+  - title: "The Great Gatsby"
+    author: "F. Scott Fitzgerald"
+    description: "A portrait of the Jazz Age in all of its decadence and excess, exploring themes of wealth, love, idealism, and the American Dream."
+    category: "Classic"
+    thumbnail: "thumbnails/gatsby.jpg"   # leave empty for placeholder
+    file: "books/great-gatsby.pdf"
+
+  - title: "Dune"
+    author: "Frank Herbert"
+    description: "Set in the distant future, a young nobleman must navigate betrayal, politics, and destiny on a desert planet harboring the most valuable substance in the universe."
+    category: "Science"
+    thumbnail: ""
+    file: "books/dune.pdf"
+
+  - title: "Sapiens"
+    author: "Yuval Noah Harari"
+    description: "A brief history of humankind — from the Stone Age to the modern day — exploring how biology and history have defined us."
+    category: "History"
+    thumbnail: ""
+    file: "books/sapiens.pdf"
