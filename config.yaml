@@ -1,32 +1,20 @@
-# ----------------------------------------------
-# SITE SETTINGS
-# ----------------------------------------------
 site:
   title: "Teere"
   subtitle: "/ Books"
-  # Optional: custom browser tab title (defaults to site.title)
   pageTitle: "Teere Library"
   
   hero:
-    # Use 'heading' for a single line. Leave empty to hide hero entirely.
     heading: "A curated collection of books."
-    # Optional: subheading / description
     description: "Browse, preview, and download freely. All titles available at no cost."
-    # Set 'show: false' to hide the hero section completely
     show: true
   
   footer:
     text: "Built with ♥ · By Mortada"
     show: true
 
-  # Search placeholder text
   searchPlaceholder: "Search by title or author…"
 
-# ----------------------------------------------
-# APPEARANCE — change any color, font, or style
-# ----------------------------------------------
 theme:
-  # Colors (use any CSS color format)
   background: "#0d0d0d"
   surface: "#161616"
   card: "#1c1c1c"
@@ -37,21 +25,16 @@ theme:
   muted: "#7a7060"
   modalOverlay: "rgba(0,0,0,0.88)"
   
-  # Fonts
   headingFont: "'Playfair Display', serif"
   bodyFont: "'DM Sans', sans-serif"
   
-  # Card hover effect
-  cardHoverLift: true        # set false to disable lift
+  cardHoverLift: true        
   cardHoverShadow: true
   
   # Border radius
   cardRadius: "12px"
   buttonRadius: "7px"
 
-# ----------------------------------------------
-# CATEGORIES (filter buttons)
-# ----------------------------------------------
 categories:
   - All
   - Fiction
@@ -62,9 +45,6 @@ categories:
   - Business
   - Sci-Fi
 
-# ----------------------------------------------
-# BOOKS — add/edit/remove entries here
-# ----------------------------------------------
 books:
   - title: "The Great Gatsby"
     author: "F. Scott Fitzgerald"
