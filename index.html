@@ -621,25 +621,40 @@
     function openModal(book) {
       modalTitle.textContent = book.title;
       modalAuthor.textContent = 'by ' + book.author;
-      modalFrame.src = book.file;
-      // Inside openModal function, after: modalFrame.src = book.file;
+      
+      // Build the full URL to the PDF (absolute URL works with Google Viewer)
+      const pdfUrl = new URL(book.file, window.location.href).href;
+      
+      // Detect mobile (simple check)
+      const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+      
+      if (isMobile) {
+        // Use Google Docs Viewer for mobile inline preview
+        modalFrame.src = `https://docs.google.com/viewer?url=${encodeURIComponent(pdfUrl)}&embedded=true`;
+      } else {
+        // Desktop: direct embed
+        modalFrame.src = pdfUrl + '#view=FitH';
+      }
+      
+      // Friendly error if PDF still fails
       modalFrame.onerror = () => {
         modalFrame.srcdoc = `
           <html style="background:#0d0d0d;display:flex;align-items:center;justify-content:center;height:100%;font-family:system-ui,sans-serif;">
-            <div style="text-align:center;color:#e8e0d0;">
-              <div style="font-size:4rem;margin-bottom:1rem;">📄❌</div>
+            <div style="text-align:center;color:#e8e0d0;padding:1rem;">
+              <div style="font-size:3rem;margin-bottom:1rem;">📄❌</div>
               <h2 style="font-weight:400;margin-bottom:0.5rem;">Preview Unavailable</h2>
-              <p style="color:#7a7060;">The PDF could not be loaded.<br>You can still download it using the button below.</p>
+              <p style="color:#7a7060;">The PDF could not be loaded.<br>Try downloading it instead.</p>
             </div>
           </html>
         `;
       };
+      
       modalDownload.href = book.file;
       modalDownload.download = book.title.replace(/\s+/g, '_') + '.pdf';
       modal.classList.add('open');
       document.body.style.overflow = 'hidden';
     }
-
+    
     function closeModal() {
       modal.classList.remove('open');
       modalFrame.src = '';
