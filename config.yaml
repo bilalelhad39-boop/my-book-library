@@ -2,13 +2,12 @@
 # SITE SETTINGS — change any text here
 # ----------------------------------------------
 site:
-  title: "The Library"
-  subtitle: "/ Collection"
+  title: "Teere"
+  subtitle: "/ Books"
   hero:
-    line1: "A curated <em>collection</em>"
-    line2: "of books & reads."
+    #line1: "A <em>collection</em>"
     description: "Browse, preview, and download freely. All titles available at no cost."
-  footer: "Built with ♥ · Hosted on GitHub Pages"
+  footer: "Built with ♥ · By Mortada"
 
 # Categories available in the filter (will appear in this order)
 categories:
