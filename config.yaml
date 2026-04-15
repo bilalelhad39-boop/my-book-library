@@ -77,7 +77,7 @@ books:
     author: "Frank Herbert"
     description: "Set in the distant future, a young nobleman must navigate betrayal..."
     category: "Science"
-    thumbnail: ""
+    thumbnail: "thumbnails/dune.jpg"
     file: "books/dune.pdf"
 
   - title: "Sapiens"
