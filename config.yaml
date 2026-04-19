@@ -57,7 +57,8 @@ essays:
     author: "Murtadaa Buso Maamune"
     description: "My Blog."
     category: "Essays & Articles"
-    file: "essays/Articles.html" 
+    thumbnail: "thumbnails/ويسألونك.png
+    file: "essays/Articles.txt" 
 
 books:
   - title: "ويسألونك عن الشيخ امباكي بوسو"
