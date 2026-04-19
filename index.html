@@ -9,7 +9,7 @@
   <script src="https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js"></script>
   
   <style>
-    /* ----- BASE STYLES ----- */
+    /* ----- BASE STYLES (unchanged) ----- */
     :root {
       --bg: #0d0d0d;
       --surface: #161616;
@@ -36,7 +36,7 @@
       flex-direction: column;
     }
 
-    /* ----- HEADER & NAV ----- */
+    /* ----- HEADER & NAV (unchanged) ----- */
     header {
       position: sticky;
       top: 0;
@@ -97,7 +97,7 @@
       color: var(--accent);
     }
 
-    /* ----- HERO ----- */
+    /* ----- HERO (unchanged) ----- */
     .hero {
       text-align: center;
       padding: 5rem 1.5rem 3rem;
@@ -119,7 +119,7 @@
       line-height: 1.6;
     }
 
-    /* ----- SEARCH ----- */
+    /* ----- SEARCH (unchanged) ----- */
     .search-container {
       max-width: 600px;
       margin: 0 auto 3rem;
@@ -145,7 +145,7 @@
       box-shadow: 0 0 0 1px var(--accent);
     }
 
-    /* ----- MAIN LAYOUT ----- */
+    /* ----- MAIN LAYOUT (unchanged) ----- */
     main {
       flex: 1;
       max-width: 1280px;
@@ -166,11 +166,23 @@
       align-items: flex-end;
     }
 
-    /* ----- GRID ----- */
+    /* ----- GRID (updated for 3 columns on desktop) ----- */
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      grid-template-columns: repeat(1, 1fr);
       gap: 2rem;
+    }
+
+    @media (min-width: 640px) {
+      .grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
     }
 
     .card {
@@ -269,7 +281,7 @@
       background: var(--accent-hover);
     }
 
-    /* ----- ARTICLE READER VIEW ----- */
+    /* ----- ARTICLE READER VIEW (unchanged) ----- */
     #article-reader {
       display: none;
       max-width: 800px;
@@ -314,7 +326,6 @@
       font-size: 0.9rem;
     }
 
-    /* Styled Text inside Articles */
     .article-content {
       line-height: 1.8;
       font-size: 1.1rem;
@@ -342,14 +353,13 @@
       margin: 1.5rem 0;
     }
 
-    /* ----- GISCUS COMMENTS ----- */
     .giscus-wrapper {
       margin-top: 4rem;
       padding-top: 2rem;
       border-top: 1px solid var(--border);
     }
 
-    /* ----- MODAL (BOOKS) ----- */
+    /* ----- MODAL (BOOKS) - Updated for side‑by‑side layout ----- */
     .modal {
       position: fixed;
       inset: 0;
@@ -408,22 +418,60 @@
     .modal-close:hover { background: var(--border); }
     .modal-download:hover { background: var(--accent-hover); }
 
+    /* New modal body flex layout */
     .modal-body {
       flex: 1;
-      position: relative;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+
+    /* Side‑by‑side on large screens */
+    @media (min-width: 768px) {
+      .modal-body {
+        flex-direction: row;
+      }
+    }
+
+    .pdf-viewer-container {
+      flex: 1;
+      min-height: 50vh;
+      background: #fff;
+    }
+
+    @media (min-width: 768px) {
+      .pdf-viewer-container {
+        min-height: 0;
+        height: auto;
+      }
     }
 
     .modal-body iframe {
-      position: absolute;
-      inset: 0;
       width: 100%;
       height: 100%;
       border: none;
-      background: #fff;
+      display: block;
     }
-    
+
+    .pdf-comments-wrapper {
+      flex: 1;
+      padding: 1.5rem;
+      background: var(--surface);
+      border-left: 1px solid var(--border);
+      overflow-y: auto;
+      max-height: 100%;
+    }
+
+    @media (max-width: 767px) {
+      .pdf-comments-wrapper {
+        border-left: none;
+        border-top: 1px solid var(--border);
+        max-height: 40vh;
+      }
+    }
+
+    /* Additional responsive adjustments */
     @media (max-width: 768px) {
-      .grid { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
       .hero h1 { font-size: 2.5rem; }
       #article-reader { padding: 1.5rem; border: none; border-radius: 0; }
     }
@@ -485,7 +533,7 @@
     </div>
   </main>
 
-  <!-- PDF PREVIEW MODAL -->
+  <!-- PDF PREVIEW MODAL with side‑by‑side comments -->
   <div class="modal" id="pdf-modal">
     <div class="modal-header">
       <div class="modal-title" id="modal-title">Book Title</div>
@@ -495,7 +543,12 @@
       </div>
     </div>
     <div class="modal-body">
-      <iframe id="modal-frame"></iframe>
+      <div class="pdf-viewer-container">
+        <iframe id="modal-frame"></iframe>
+      </div>
+      <div class="pdf-comments-wrapper" id="pdf-comments-container">
+        <!-- Giscus injected here -->
+      </div>
     </div>
   </div>
 
@@ -596,15 +649,12 @@
         const card = document.createElement('div');
         card.className = 'card';
         
-        // Use a generic placeholder if thumbnail is missing
         const thumbSrc = item.thumbnail || 'https://via.placeholder.com/300x400/161616/7a7060?text=No+Cover';
         
-        // Button Logic
         let actionBtnHTML = '';
         if (currentView === 'books') {
           actionBtnHTML = `<button class="btn" onclick="openBookModal('${item.file}', '${item.title.replace(/'/g, "\\'")}')">Preview PDF</button>`;
         } else {
-          // Pass index to fetch the right article
           const idx = data.indexOf(item);
           actionBtnHTML = `<button class="btn" onclick="openArticle(${idx})">Read Article</button>`;
         }
@@ -628,23 +678,17 @@
     // --- CUSTOM SHORTCODE PARSER FOR .TXT ESSAYS ---
     function parseCustomCodes(text) {
       let html = text
-        // Headings
         .replace(/\[h1\](.*?)\[\/h1\]/gis, '<h1>$1</h1>')
         .replace(/\[h2\](.*?)\[\/h2\]/gis, '<h2>$1</h2>')
         .replace(/\[h3\](.*?)\[\/h3\]/gis, '<h3>$1</h3>')
-        // Inline formatting
         .replace(/\[b\](.*?)\[\/b\]/gis, '<strong>$1</strong>')
         .replace(/\[i\](.*?)\[\/i\]/gis, '<em>$1</em>')
         .replace(/\[u\](.*?)\[\/u\]/gis, '<u>$1</u>')
-        // Colors & Alignment
         .replace(/\[color=(.*?)\](.*?)\[\/color\]/gis, '<span style="color:$1">$2</span>')
         .replace(/\[center\](.*?)\[\/center\]/gis, '<div style="text-align:center">$1</div>')
-        // Blocks
         .replace(/\[quote\](.*?)\[\/quote\]/gis, '<blockquote>$1</blockquote>')
-        // Media
         .replace(/\[img=(.*?)\]/gis, '<img src="$1" alt="Image">');
 
-      // Paragraph formatting: Split by double newline to create <p> tags
       html = html.split(/\n\s*\n/).map(p => `<p>${p.replace(/\n/g, '<br>')}</p>`).join('');
       
       return html;
@@ -654,18 +698,15 @@
     async function openArticle(index) {
       const article = articlesData[index];
       
-      // Update UI Header
       document.getElementById('read-title').textContent = article.title;
       document.getElementById('read-author').textContent = `By ${article.author}`;
       document.getElementById('read-category').textContent = article.category;
       document.getElementById('read-content').innerHTML = '<p>Loading content...</p>';
-    
-      // Show Reader, Hide Browse
+
       browseSection.style.display = 'none';
       articleReader.style.display = 'block';
       window.scrollTo({ top: 0, behavior: 'smooth' });
-    
-      // Fetch txt file
+
       try {
         const response = await fetch(article.file);
         if (!response.ok) throw new Error("File not found");
@@ -679,7 +720,6 @@
           </p>
         `;
       } finally {
-        // Always load Giscus comments, even if the content failed
         loadGiscus(article.title);
       }
     }
@@ -687,66 +727,64 @@
     function closeArticle() {
       browseSection.style.display = 'block';
       articleReader.style.display = 'none';
-      // Clear Giscus to prevent multiple iframes piling up
       document.getElementById('giscus-container').innerHTML = '';
     }
 
-    // --- GISCUS INTEGRATION ---
+    // --- GISCUS FOR ARTICLES ---
     function loadGiscus(articleTitle) {
       const container = document.getElementById('giscus-container');
       container.innerHTML = '';
-    
-      if (!configData.comments?.enabled) {
-        console.warn('Giscus comments disabled in config.');
-        return;
-      }
-    
+
+      if (!configData.comments?.enabled) return;
+
       const script = document.createElement('script');
-      script.src = 'https://giscus.app/client.js';
-      script.setAttribute('data-repo', configData.comments.repo);
-      if (configData.comments.repoId) script.setAttribute('data-repo-id', configData.comments.repoId);
-      if (configData.comments.category) script.setAttribute('data-category', configData.comments.category);
-      if (configData.comments.categoryId) script.setAttribute('data-category-id', configData.comments.categoryId);
-      script.setAttribute('data-mapping', 'specific');
-      script.setAttribute('data-term', articleTitle);
-      script.setAttribute('data-strict', '0');
-      script.setAttribute('data-reactions-enabled', '1');
-      script.setAttribute('data-emit-metadata', '0');
-      script.setAttribute('data-input-position', 'bottom');
-      script.setAttribute('data-theme', 'dark');
-      script.setAttribute('data-lang', 'en');
-      script.setAttribute('crossorigin', 'anonymous');
+      script.src = "https://giscus.app/client.js";
+      script.setAttribute("data-repo", configData.comments.repo);
+      if (configData.comments.repoId) script.setAttribute("data-repo-id", configData.comments.repoId);
+      if (configData.comments.category) script.setAttribute("data-category", configData.comments.category);
+      if (configData.comments.categoryId) script.setAttribute("data-category-id", configData.comments.categoryId);
+      script.setAttribute("data-mapping", "specific");
+      script.setAttribute("data-term", articleTitle);
+      script.setAttribute("data-strict", "0");
+      script.setAttribute("data-reactions-enabled", "1");
+      script.setAttribute("data-emit-metadata", "0");
+      script.setAttribute("data-input-position", "bottom");
+      script.setAttribute("data-theme", "dark");
+      script.setAttribute("data-lang", "en");
+      script.setAttribute("crossorigin", "anonymous");
       script.async = true;
-    
+
       script.onerror = () => {
-        console.error('Giscus script failed to load. Check repo/public settings.');
-        container.innerHTML = '<p style="color: #7a7060;">⚠️ Comments could not be loaded. Please verify the repository configuration.</p>';
+        console.error('Giscus failed to load for article.');
+        container.innerHTML = '<p style="color: var(--muted); padding: 1rem;">⚠️ Comments could not be loaded. Check repository settings.</p>';
       };
-    
+
       container.appendChild(script);
-      console.log('Giscus script appended for article:', articleTitle);
     }
 
-    // --- BOOK MODAL HANDLING ---
+    // --- BOOK MODAL HANDLING (with PDF comments) ---
     const modal = document.getElementById('pdf-modal');
     const modalFrame = document.getElementById('modal-frame');
     
     function openBookModal(pdfUrl, title) {
       document.getElementById('modal-title').textContent = title;
       
-      // Construct Google Docs Viewer URL
-      const viewerUrl = `https://docs.google.com/viewer?url=${encodeURIComponent(window.location.origin + window.location.pathname.replace('index.html', '') + pdfUrl)}&embedded=true`;
+      const viewerUrl = `https://docs.google.com/viewer?url=${encodeURIComponent(
+        window.location.origin + window.location.pathname.replace('index.html', '') + pdfUrl
+      )}&embedded=true`;
       
       modalFrame.src = viewerUrl;
       
-      // Fallback for local testing
       modalFrame.onerror = function() {
-        modalFrame.outerHTML = `<div style="padding:2rem;text-align:center;color:white;"><p>Preview unavailable locally. Please download.</p></div>`;
+        modalFrame.outerHTML = `<div style="padding:2rem;text-align:center;color:var(--text);"><p>Preview unavailable. You can still download and comment below.</p></div>`;
       };
       
       const dlBtn = document.getElementById('modal-download');
       dlBtn.href = pdfUrl;
       dlBtn.download = title.replace(/\s+/g, '_') + '.pdf';
+      
+      // Load comments for this PDF
+      loadPdfComments(title);
       
       modal.classList.add('open');
       document.body.style.overflow = 'hidden';
@@ -755,7 +793,40 @@
     function closeBookModal() {
       modal.classList.remove('open');
       modalFrame.src = '';
+      document.getElementById('pdf-comments-container').innerHTML = '';
       document.body.style.overflow = '';
+    }
+
+    function loadPdfComments(bookTitle) {
+      const container = document.getElementById('pdf-comments-container');
+      container.innerHTML = '';
+      
+      if (!configData.comments?.enabled) return;
+      
+      const script = document.createElement('script');
+      script.src = 'https://giscus.app/client.js';
+      script.setAttribute('data-repo', configData.comments.repo);
+      if (configData.comments.repoId) script.setAttribute('data-repo-id', configData.comments.repoId);
+      if (configData.comments.category) script.setAttribute('data-category', configData.comments.category);
+      if (configData.comments.categoryId) script.setAttribute('data-category-id', configData.comments.categoryId);
+      script.setAttribute('data-mapping', 'specific');
+      script.setAttribute('data-term', bookTitle);
+      script.setAttribute('data-strict', '0');
+      script.setAttribute('data-reactions-enabled', '1');
+      script.setAttribute('data-emit-metadata', '0');
+      script.setAttribute('data-input-position', 'bottom');
+      script.setAttribute('data-theme', 'dark');
+      script.setAttribute('data-lang', 'en');
+      script.setAttribute('crossorigin', 'anonymous');
+      script.async = true;
+      
+      script.onerror = () => {
+        console.error('Giscus failed to load for PDF.');
+        container.innerHTML = '<p style="color: var(--muted); padding: 1rem;">⚠️ Comments could not be loaded. Check repository settings.</p>';
+      };
+      
+      container.appendChild(script);
+      console.log('Loading Giscus for PDF:', bookTitle);
     }
 
     document.getElementById('modal-close').addEventListener('click', closeBookModal);
@@ -764,7 +835,6 @@
 
     // Initialize
     window.addEventListener('DOMContentLoaded', initApp);
-
   </script>
 </body>
 </html>
