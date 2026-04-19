@@ -699,43 +699,43 @@
       }
 
       function populateTexts(site) {
-        document.title = site.pageTitle || site.title || 'Library';
-        document.getElementById('site-title').textContent = site.title || '';
-        document.getElementById('site-subtitle').textContent = site.subtitle || '';
-        if (site.searchPlaceholder) searchInput.placeholder = site.searchPlaceholder;
-        
-        const heroSection = document.getElementById('hero-section');
-        if (site.hero && site.hero.show !== false) {
-          heroSection.style.display = 'block';
-          document.getElementById('hero-heading').innerHTML = site.hero.heading || '';
-          document.getElementById('hero-desc').textContent = site.hero.description || '';
-          
-          // Contact in footer
-          if (site.contact) {
-            const footerContact = document.getElementById('footer-contact');
-            let html = '';
-            if (site.contact.email) {
-              html += `<a href="mailto:${site.contact.email}">📧 ${site.contact.email}</a>`;
-            }
-            if (site.contact.phone) {
-              html += `<a href="tel:${site.contact.phone.replace(/\s+/g, '')}">📞 ${site.contact.phone}</a>`;
-            }
-            if (html) {
-              footerContact.innerHTML = html;
-              footerContact.style.display = 'flex';
-              footerContact.style.justifyContent = 'center';
-              footerContact.style.gap = '2rem';
-              footerContact.style.padding = '1rem 0';
-            }
-          }
-        }
-        
-        const footerEl = document.getElementById('footer-text');
-        if (site.footer && site.footer.show !== false) {
-          footerEl.style.display = 'block';
-          footerEl.innerHTML = site.footer.text || '';
-        }
-      }
+  document.title = site.pageTitle || site.title || 'Library';
+  document.getElementById('site-title').textContent = site.title || '';
+  document.getElementById('site-subtitle').textContent = site.subtitle || '';
+  if (site.searchPlaceholder) searchInput.placeholder = site.searchPlaceholder;
+  
+  const heroSection = document.getElementById('hero-section');
+  if (site.hero && site.hero.show !== false) {
+    heroSection.style.display = 'block';
+    document.getElementById('hero-heading').innerHTML = site.hero.heading || '';
+    document.getElementById('hero-desc').textContent = site.hero.description || '';
+  }
+  
+  // Contact in footer (uses #contact-info)
+  if (site.contact) {
+    const contactEl = document.getElementById('contact-info');
+    let html = '';
+    if (site.contact.email) {
+      html += `<a href="mailto:${site.contact.email}">📧 ${site.contact.email}</a>`;
+    }
+    if (site.contact.phone) {
+      html += `<a href="tel:${site.contact.phone.replace(/\s+/g, '')}">📞 ${site.contact.phone}</a>`;
+    }
+    if (html) {
+      contactEl.innerHTML = html;
+      contactEl.style.display = 'flex';
+      contactEl.style.justifyContent = 'center';
+      contactEl.style.gap = '2rem';
+      contactEl.style.padding = '1rem 0';
+    }
+  }
+  
+  const footerEl = document.getElementById('footer-text');
+  if (site.footer && site.footer.show !== false) {
+    footerEl.style.display = 'block';
+    footerEl.innerHTML = site.footer.text || '';
+  }
+}
 
       function injectGoogleAnalytics(analytics) {
         if (analytics && analytics.google_id) {
