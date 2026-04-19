@@ -541,7 +541,7 @@
 
     async function loadConfig() {
       try {
-        const response = await fetch('config.yaml');
+        const response = await fetch('styles.yaml');
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
         const yamlText = await response.text();
         config = jsyaml.load(yamlText);
