@@ -538,6 +538,26 @@
     @media (max-width: 380px) {
       .grid { grid-template-columns: 1fr; }
     }
+    .footer-contact {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 2rem;
+      padding: 1rem 0;
+      border-top: 1px solid var(--border);
+    }
+    .footer-contact a {
+      color: var(--accent);
+      text-decoration: none;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: opacity 0.2s;
+    }
+    .footer-contact a:hover {
+      opacity: 0.8;
+    }
   </style>
 </head>
 <body>
@@ -562,7 +582,10 @@
   <main>
     <!-- Browse Section (Grid) -->
     <div id="browse-section">
-      
+       <div class="hero" id="hero-section" style="display: none;">
+        <h1 id="hero-heading"></h1>
+        <p id="hero-desc"></p>
+      </div>
 
       <div id="filters-container" style="display: block;">
         <div class="filters" id="filters">
@@ -591,13 +614,9 @@
     <div id="global-comments"></div>
   </main>
 
-  <footer class="site-footer" id="footer-text" style="display: none;">
-    <div class="hero" id="hero-section" style="display: none;">
-        <h1 id="hero-heading"></h1>
-        <p id="hero-desc"></p>
-        <div id="contact-info" class="contact-info" style="display: none;"></div>
-      </div>
-  </footer>
+  <footer class="site-footer" id="footer-text" style="display: none;">        
+    <div id="contact-info" class="contact-info" style="display: none;"></div>
+</footer>
 
   <!-- PDF Preview Modal -->
   <div class="modal-overlay" id="modal" role="dialog" aria-modal="true">
@@ -711,8 +730,9 @@
           document.getElementById('hero-heading').innerHTML = site.hero.heading || '';
           document.getElementById('hero-desc').textContent = site.hero.description || '';
           
+          // Contact in footer
           if (site.contact) {
-            const contactEl = document.getElementById('contact-info');
+            const footerContact = document.getElementById('footer-contact');
             let html = '';
             if (site.contact.email) {
               html += `<a href="mailto:${site.contact.email}">📧 ${site.contact.email}</a>`;
@@ -721,8 +741,11 @@
               html += `<a href="tel:${site.contact.phone.replace(/\s+/g, '')}">📞 ${site.contact.phone}</a>`;
             }
             if (html) {
-              contactEl.innerHTML = html;
-              contactEl.style.display = 'flex';
+              footerContact.innerHTML = html;
+              footerContact.style.display = 'flex';
+              footerContact.style.justifyContent = 'center';
+              footerContact.style.gap = '2rem';
+              footerContact.style.padding = '1rem 0';
             }
           }
         }
