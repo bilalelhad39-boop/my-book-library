@@ -21,6 +21,6 @@ comments:
   provider: "giscus"
   repo: "bilalelhad39-boop/my-book-library"
   # NOTE: To use Giscus, you may need to add repoId, category, and categoryId depending on your GitHub setup.
-  # repoId: "R_kgDOXXXXXX" 
-  # category: "Announcements"
-  # categoryId: "DIC_kwDOXXXXXX"
+  repoId: "R_kgDOSDoNCw" 
+  category: "Announcements"
+  categoryId: "DIC_kwDOSDoNC84C7Nxb"
