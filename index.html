@@ -3,831 +3,812 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title id="page-title">Loading...</title>
+  <title>The House of Knowledge</title>
   
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
-  
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js"></script>
   
   <style>
-    /* ----- BASE STYLES (customisable via config.yaml theme) ----- */
+    /* ----- BASE STYLES (unchanged) ----- */
+    :root {
+      --bg: #0d0d0d;
+      --surface: #161616;
+      --card: #1c1c1c;
+      --border: #2a2a2a;
+      --accent: #c9a84c;
+      --accent-hover: #e8c97a;
+      --text: #e8e0d0;
+      --muted: #7a7060;
+      --modal-overlay: rgba(0,0,0,0.88);
+      --heading-font: 'Playfair Display', serif;
+      --body-font: 'DM Sans', sans-serif;
+    }
+
     * { box-sizing: border-box; margin: 0; padding: 0; }
+    
     body {
-      background: var(--bg, #0d0d0d);
-      color: var(--text, #e8e0d0);
-      font-family: var(--body-font, 'DM Sans', sans-serif);
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--body-font);
       font-weight: 300;
       min-height: 100vh;
-      transition: background 0.2s;
       display: flex;
       flex-direction: column;
     }
 
+    /* ----- HEADER & NAV (unchanged) ----- */
     header {
       position: sticky;
       top: 0;
       z-index: 100;
       background: rgba(13,13,13,0.92);
       backdrop-filter: blur(16px);
-      border-bottom: 1px solid var(--border, #2a2a2a);
+      border-bottom: 1px solid var(--border);
       padding: 0 1.5rem;
     }
+
     .header-inner {
       max-width: 1280px;
       margin: 0 auto;
       display: flex;
       align-items: center;
-      gap: 2rem;
+      justify-content: space-between;
       height: 70px;
     }
+
+    .logo-container {
+      display: flex;
+      align-items: baseline;
+      gap: 0.75rem;
+    }
+
     .logo {
-      font-family: var(--heading-font, 'Playfair Display', serif);
+      font-family: var(--heading-font);
       font-size: 1.5rem;
-      color: var(--accent, #c9a84c);
-      white-space: nowrap;
+      font-weight: 700;
+      color: var(--text);
+      text-decoration: none;
+      letter-spacing: -0.02em;
     }
-    .logo span {
+
+    .subtitle {
+      color: var(--muted);
+      font-size: 0.9rem;
       font-style: italic;
-      color: var(--text, #e8e0d0);
-      opacity: 0.6;
-      margin-left: 0.3em;
     }
-    .search-wrap {
-      flex: 1;
-      max-width: 480px;
+
+    .view-toggle {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-family: var(--body-font);
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .view-toggle:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    /* ----- HERO (unchanged) ----- */
+    .hero {
+      text-align: center;
+      padding: 5rem 1.5rem 3rem;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .hero h1 {
+      font-family: var(--heading-font);
+      font-size: 3.5rem;
+      font-weight: 400;
+      margin-bottom: 1rem;
+      line-height: 1.1;
+    }
+
+    .hero p {
+      color: var(--muted);
+      font-size: 1.1rem;
+      line-height: 1.6;
+    }
+
+    /* ----- SEARCH (unchanged) ----- */
+    .search-container {
+      max-width: 600px;
+      margin: 0 auto 3rem;
+      padding: 0 1.5rem;
       position: relative;
     }
-    .search-wrap svg {
-      position: absolute;
-      left: 14px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: var(--muted, #7a7060);
-    }
-    #search {
+
+    .search-input {
       width: 100%;
-      background: var(--surface, #161616);
-      border: 1px solid var(--border, #2a2a2a);
-      border-radius: 8px;
-      padding: 10px 14px 10px 42px;
-      color: var(--text, #e8e0d0);
-      font-size: 0.9rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 1rem 1.5rem;
+      border-radius: 30px;
+      font-family: var(--body-font);
+      font-size: 1rem;
       outline: none;
-    }
-    #search:focus { border-color: var(--accent, #c9a84c); }
-    #search::placeholder { color: var(--muted, #7a7060); }
-
-    .count-badge {
-      font-size: 0.8rem;
-      color: var(--muted, #7a7060);
-      white-space: nowrap;
+      transition: border-color 0.2s, box-shadow 0.2s;
     }
 
+    .search-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px var(--accent);
+    }
+
+    /* ----- MAIN LAYOUT (unchanged) ----- */
     main {
+      flex: 1;
       max-width: 1280px;
       margin: 0 auto;
-      padding: 2rem 1.5rem;
-      flex: 1;
+      padding: 0 1.5rem 4rem;
       width: 100%;
     }
-    
-    /* Hero & Contact */
-    .hero {
-      margin-bottom: 2.5rem;
-      border-bottom: 1px solid var(--border, #2a2a2a);
-      padding-bottom: 2rem;
-    }
-    .hero h1 {
-      font-family: var(--heading-font, 'Playfair Display', serif);
-      font-size: clamp(2.2rem, 5vw, 3.8rem);
-      font-weight: 700;
-    }
-    .hero h1 em { color: var(--accent, #c9a84c); font-style: italic; }
-    .hero p { margin-top: 0.8rem; color: var(--muted, #7a7060); max-width: 500px; line-height: 1.6; }
-    
-    .contact-info {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1.5rem;
-      margin-top: 1.5rem;
-    }
-    .contact-info a {
-      color: var(--accent, #c9a84c);
-      text-decoration: none;
-      font-size: 0.9rem;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      font-weight: 500;
-      background: var(--surface, #161616);
-      padding: 6px 14px;
-      border-radius: 20px;
-      border: 1px solid var(--border, #2a2a2a);
-      transition: all 0.2s;
-    }
-    .contact-info a:hover {
-      border-color: var(--accent, #c9a84c);
-      background: rgba(201,168,76,0.1);
-    }
 
-    /* Sections */
     .section-title {
-      font-family: var(--heading-font, 'Playfair Display', serif);
-      font-size: 1.8rem;
-      color: var(--text, #e8e0d0);
-      margin-bottom: 1.5rem;
-      display: flex;
-      align-items: center;
-      gap: 0.8rem;
-    }
-    .section-title::after {
-      content: "";
-      flex: 1;
-      height: 1px;
-      background: var(--border, #2a2a2a);
-    }
-
-    /* Filters */
-    .filters {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
+      font-family: var(--heading-font);
+      font-size: 2rem;
+      font-weight: 400;
       margin-bottom: 2rem;
-      align-items: center;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
     }
-    .filter-label {
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      color: var(--muted, #7a7060);
-      margin-right: 0.5rem;
-    }
-    .filter-btn {
-      background: transparent;
-      border: 1px solid var(--border, #2a2a2a);
-      color: var(--muted, #7a7060);
-      padding: 6px 14px;
-      border-radius: 100px;
-      font-size: 0.82rem;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    .filter-btn:hover { border-color: var(--accent, #c9a84c); color: var(--accent, #c9a84c); }
-    .filter-btn.active { background: var(--accent, #c9a84c); border-color: var(--accent, #c9a84c); color: #0d0d0d; font-weight: 500; }
 
-    /* Grid & Cards – shorter cards via aspect ratio and reduced padding */
+    /* ----- GRID (updated for 3 columns on desktop) ----- */
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-      gap: 1.5rem;
-      margin-bottom: 4rem;
+      grid-template-columns: repeat(1, 1fr);
+      gap: 2rem;
+    }
+
+    @media (min-width: 640px) {
+      .grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
     }
 
     .card {
-      background: var(--card, #1c1c1c);
-      border: 1px solid var(--border, #2a2a2a);
-      border-radius: var(--card-radius, 12px);
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
       overflow: hidden;
       display: flex;
       flex-direction: column;
-      transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s;
-      animation: fadeUp 0.4s ease both;
-      cursor: pointer;
-    }
-    @keyframes fadeUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
-    .card:hover {
-      transform: translateY(var(--hover-lift, -4px));
-      border-color: var(--accent-alpha, rgba(201,168,76,0.35));
-      box-shadow: var(--hover-shadow, 0 12px 40px rgba(0,0,0,0.5));
-    }
-    
-    /* Essay specific style */
-    .card.essay-card .card-thumb { display: none; }
-    .card.essay-card .category-tag {
-      position: relative;
-      top: 0; left: 0;
-      display: inline-block;
-      margin-bottom: 0.8rem;
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s;
     }
 
-    /* Thumbnail: shorter aspect ratio (4/5 instead of 3/4) */
-    .card-thumb {
-      aspect-ratio: 4 / 5;
-      background: var(--surface, #161616);
-      position: relative;
+    .card:hover {
+      transform: translateY(-4px);
+      border-color: var(--accent);
+      box-shadow: 0 12px 24px rgba(0,0,0,0.4);
     }
+
+    .card-thumb {
+      aspect-ratio: 3/4;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+    }
+
     .card-thumb img {
       width: 100%;
       height: 100%;
       object-fit: cover;
-      transition: transform 0.4s;
+      display: block;
     }
-    .card:hover .card-thumb img { transform: scale(1.04); }
-    .placeholder {
-      width: 100%;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      background: linear-gradient(135deg, #1a1a1a, #222);
-    }
-    .placeholder-icon { font-size: 2.8rem; opacity: 0.25; }
-    .placeholder-title {
-      font-family: var(--heading-font, 'Playfair Display', serif);
-      font-size: 0.75rem;
-      color: var(--muted, #7a7060);
-      padding: 0 1rem;
-      text-align: center;
-    }
-    /* Category tag overlay on thumbnail */
-    .category-tag {
+
+    .card-thumb::after {
+      content: '';
       position: absolute;
-      top: 10px;
-      left: 10px;
-      background: rgba(13,13,13,0.85);
-      border: 1px solid var(--border, #2a2a2a);
-      color: var(--accent, #c9a84c);
-      font-size: 0.68rem;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      padding: 3px 8px;
-      border-radius: 4px;
-      backdrop-filter: blur(6px);
-      z-index: 2;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 40%);
     }
-    /* Compact card body */
+
     .card-body {
-      padding: 1rem 1rem 1.2rem;
-      flex: 1;
+      padding: 1.5rem;
       display: flex;
       flex-direction: column;
+      flex: 1;
     }
-    .card-title {
-      font-family: var(--heading-font, 'Playfair Display', serif);
-      font-size: 1rem;
-      font-weight: 700;
-      line-height: 1.3;
-      margin-bottom: 0.25rem;
-    }
-    .card-author {
-      font-size: 0.78rem;
-      color: var(--accent, #c9a84c);
+
+    .category-tag {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--accent);
       margin-bottom: 0.5rem;
       font-weight: 500;
     }
+
+    .card-title {
+      font-family: var(--heading-font);
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 0.25rem;
+      line-height: 1.3;
+    }
+
+    .card-author {
+      color: var(--muted);
+      font-size: 0.85rem;
+      margin-bottom: 1rem;
+    }
+
     .card-desc {
-      font-size: 0.8rem;
-      color: var(--muted, #7a7060);
+      font-size: 0.9rem;
       line-height: 1.5;
+      color: #aaa;
+      margin-bottom: 1.5rem;
       flex: 1;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
     }
-    .card-actions {
-      display: flex;
-      gap: 0.5rem;
-      margin-top: 0.8rem;
-    }
+
     .btn {
-      flex: 1;
-      padding: 7px 8px;
-      border-radius: var(--button-radius, 7px);
-      font-size: 0.78rem;
+      display: inline-block;
+      width: 100%;
+      background: var(--text);
+      color: var(--bg);
+      padding: 10px;
+      border-radius: 6px;
+      font-size: 0.9rem;
       font-weight: 500;
-      cursor: pointer;
       text-align: center;
       text-decoration: none;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 5px;
-      transition: all 0.2s;
+      cursor: pointer;
+      border: none;
+      transition: background 0.2s;
     }
-    .btn-download {
-      background: var(--accent, #c9a84c);
-      border: 1px solid var(--accent, #c9a84c);
-      color: #0d0d0d;
-    }
-    .btn-download:hover { background: var(--accent-hover, #e8c97a); }
-    .btn-preview {
-      background: transparent;
-      border: 1px solid var(--border, #2a2a2a);
-      color: var(--text, #e8e0d0);
-    }
-    .btn-preview:hover { border-color: var(--accent, #c9a84c); color: var(--accent, #c9a84c); }
 
-    /* Modal with side‑by‑side comments */
-    .modal-overlay {
+    .btn:hover {
+      background: var(--accent-hover);
+    }
+
+    /* ----- ARTICLE READER VIEW (unchanged) ----- */
+    #article-reader {
       display: none;
+      max-width: 800px;
+      margin: 0 auto;
+      background: var(--surface);
+      padding: 3rem;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+    }
+
+    .back-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      padding: 6px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-bottom: 2rem;
+      transition: all 0.2s;
+      font-family: var(--body-font);
+    }
+
+    .back-btn:hover {
+      color: var(--text);
+      border-color: var(--text);
+    }
+
+    .article-header {
+      margin-bottom: 2rem;
+      padding-bottom: 2rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .article-header h1 {
+      font-family: var(--heading-font);
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .article-meta {
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .article-content {
+      line-height: 1.8;
+      font-size: 1.1rem;
+      color: #dfdfdf;
+    }
+    
+    .article-content p { margin-bottom: 1.5rem; }
+    .article-content h1, .article-content h2, .article-content h3 {
+      font-family: var(--heading-font);
+      color: var(--accent);
+      margin: 2rem 0 1rem;
+    }
+    .article-content strong { color: #fff; font-weight: 700; }
+    .article-content em { color: #ccc; }
+    .article-content blockquote {
+      border-left: 4px solid var(--accent);
+      padding-left: 1rem;
+      margin: 1.5rem 0;
+      font-style: italic;
+      color: var(--muted);
+    }
+    .article-content img {
+      max-width: 100%;
+      border-radius: 8px;
+      margin: 1.5rem 0;
+    }
+
+    .giscus-wrapper {
+      margin-top: 4rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+    }
+
+    /* ----- MODAL (BOOKS) - Updated for side‑by‑side layout ----- */
+    .modal {
       position: fixed;
       inset: 0;
-      background: var(--modal-overlay, rgba(0,0,0,0.88));
-      z-index: 1000;
-      align-items: center;
-      justify-content: center;
-      padding: 1rem;
+      background: var(--modal-overlay);
       backdrop-filter: blur(8px);
-    }
-    .modal-overlay.open { display: flex; }
-
-    .modal {
-      background: var(--card, #1c1c1c);
-      border: 1px solid var(--border, #2a2a2a);
-      border-radius: 16px;
-      width: 100%;
-      max-width: 1200px;
-      height: 90vh;
-      max-height: 90vh;
+      z-index: 1000;
       display: flex;
       flex-direction: column;
-      overflow: hidden;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+
+    .modal.open {
+      opacity: 1;
+      pointer-events: auto;
     }
 
     .modal-header {
-      padding: 1.2rem 1.5rem;
-      border-bottom: 1px solid var(--border, #2a2a2a);
       display: flex;
-      align-items: flex-start;
-      gap: 1rem;
-      flex-shrink: 0;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 1.5rem;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
     }
-    .modal-meta { flex: 1; }
+
     .modal-title {
-      font-family: var(--heading-font, 'Playfair Display', serif);
-      font-size: 1.3rem;
+      font-family: var(--heading-font);
+      font-weight: 700;
     }
-    .modal-author {
-      font-size: 0.82rem;
-      color: var(--accent, #c9a84c);
-      margin-top: 0.2rem;
-    }
-    .modal-close {
-      background: var(--surface, #161616);
-      border: 1px solid var(--border, #2a2a2a);
-      color: var(--muted, #7a7060);
-      width: 34px;
-      height: 34px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 1.1rem;
-      flex-shrink: 0;
-    }
-    .modal-close:hover { color: var(--text, #e8e0d0); border-color: var(--accent, #c9a84c); }
 
-    .modal-preview {
-      flex: 1;
-      min-height: 0;
+    .modal-actions {
       display: flex;
-      flex-direction: row;
-    }
-    @media (max-width: 768px) {
-      .modal-preview { flex-direction: column; }
+      gap: 1rem;
     }
 
-    .pdf-viewer {
-      flex: 2;
-      min-width: 0;
+    .modal-close, .modal-download {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 6px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: all 0.2s;
+    }
+
+    .modal-download {
+      background: var(--accent);
+      color: var(--bg);
+      border-color: var(--accent);
+    }
+
+    .modal-close:hover { background: var(--border); }
+    .modal-download:hover { background: var(--accent-hover); }
+
+    /* New modal body flex layout */
+    .modal-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+
+    /* Side‑by‑side on large screens */
+    @media (min-width: 768px) {
+      .modal-body {
+        flex-direction: row;
+      }
+    }
+
+    .pdf-viewer-container {
+      flex: 1;
+      min-height: 50vh;
       background: #fff;
     }
-    .pdf-viewer iframe {
+
+    @media (min-width: 768px) {
+      .pdf-viewer-container {
+        min-height: 0;
+        height: auto;
+      }
+    }
+
+    .modal-body iframe {
       width: 100%;
       height: 100%;
       border: none;
       display: block;
     }
 
-    .modal-comments {
+    .pdf-comments-wrapper {
       flex: 1;
-      background: var(--surface, #161616);
-      border-left: 1px solid var(--border, #2a2a2a);
       padding: 1.5rem;
+      background: var(--surface);
+      border-left: 1px solid var(--border);
       overflow-y: auto;
+      max-height: 100%;
     }
-    @media (max-width: 768px) {
-      .modal-comments {
+
+    @media (max-width: 767px) {
+      .pdf-comments-wrapper {
         border-left: none;
-        border-top: 1px solid var(--border, #2a2a2a);
+        border-top: 1px solid var(--border);
         max-height: 40vh;
       }
     }
 
-    .modal-footer {
-      padding: 1rem 1.5rem;
-      border-top: 1px solid var(--border, #2a2a2a);
-      display: flex;
-      justify-content: flex-end;
-      gap: 0.75rem;
-      flex-shrink: 0;
-    }
-
-    .empty, .loading {
-      grid-column: 1/-1;
-      text-align: center;
-      padding: 4rem 1rem;
-      color: var(--muted, #7a7060);
-    }
-    .loading { font-style: italic; }
-
-    .site-footer {
-      text-align: center;
-      padding: 2.5rem 1rem;
-      color: var(--muted, #7a7060);
-      border-top: 1px solid var(--border, #2a2a2a);
-    }
-
-    #global-comments {
-      max-width: 900px;
-      margin: 0 auto 3rem auto;
-      padding: 0 1.5rem;
-    }
-
-    @media (max-width: 600px) {
-      .header-inner { gap: 1rem; }
-      .logo span { display: none; }
-      .count-badge { display: none; }
-      .grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
-      .card-actions { flex-direction: column; }
-    }
-    @media (max-width: 380px) {
-      .grid { grid-template-columns: 1fr; }
+    /* Additional responsive adjustments */
+    @media (max-width: 768px) {
+      .hero h1 { font-size: 2.5rem; }
+      #article-reader { padding: 1.5rem; border: none; border-radius: 0; }
     }
   </style>
 </head>
 <body>
+
   <header>
-  <div class="header-inner">
-    <div class="logo"><span id="site-title"></span><span id="site-subtitle"></span></div>
-    <div class="search-wrap">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
-      </svg>
-      <input type="text" id="search" placeholder="Search by title or author…" autocomplete="off"/>
+    <div class="header-inner">
+      <div class="logo-container">
+        <a href="#" class="logo" id="site-title">Teere Guede Bousso</a>
+        <span class="subtitle" id="site-subtitle">/ Library</span>
+      </div>
+      <button class="view-toggle" id="view-toggle-btn" onclick="toggleView()">
+        <span id="toggle-icon">📰</span> <span id="toggle-text">Switch to Articles</span>
+      </button>
     </div>
-    <div class="count-badge" id="count"></div>
-  </div>
-</header>
+  </header>
 
-<main>
-  <div class="hero" id="hero-section" style="display: none;">
-    <h1 id="hero-heading"></h1>
-    <p id="hero-desc"></p>
-    <div id="contact-info" class="contact-info" style="display: none;"></div>
-  </div>
+  <main>
+    <!-- HERO & SEARCH (Hidden during Article reading) -->
+    <div id="browse-section">
+      <div class="hero">
+        <h1 id="hero-heading">The House of Knowledge</h1>
+        <p id="hero-desc">Browse, preview, and explore freely. Switch between our collection of Books and Essays.</p>
+      </div>
 
-  <div id="essays-container" style="display: none;">
-    <h2 class="section-title">Essays & Articles</h2>
-    <div class="grid" id="essays-grid"></div>
-  </div>
+      <div class="search-container">
+        <input type="text" id="search-input" class="search-input" placeholder="Search by title or author…">
+      </div>
 
-  <div id="books-container">
-    <h2 class="section-title" id="library-title" style="display: none;">Library Collection</h2>
-    <div class="filters" id="filters">
-      <span class="filter-label">Filter:</span>
+      <div class="section-title">
+        <span id="current-section-title">All Books</span>
+        <span id="item-count" style="font-size: 1rem; color: var(--muted);">0 items</span>
+      </div>
+
+      <!-- GRID FOR BOOKS / ARTICLES -->
+      <div class="grid" id="grid-container"></div>
     </div>
-    <div class="grid" id="grid">
-      <div class="loading">Loading library...</div>
+
+    <!-- ARTICLE READER VIEW -->
+    <div id="article-reader">
+      <button class="back-btn" onclick="closeArticle()">← Back to Articles</button>
+      
+      <div class="article-header">
+        <span class="category-tag" id="read-category">Category</span>
+        <h1 id="read-title">Article Title</h1>
+        <div class="article-meta" id="read-author">By Author</div>
+      </div>
+      
+      <div class="article-content" id="read-content">
+        <!-- Parsed text content goes here -->
+      </div>
+
+      <!-- GISCUS CONTAINER -->
+      <div class="giscus-wrapper" id="giscus-container">
+        <!-- Script injected here -->
+      </div>
     </div>
-  </div>
-  
-  <div id="global-comments"></div>
-</main>
+  </main>
 
-<footer class="site-footer" id="footer-text" style="display: none;"></footer>
-
-<!-- Modal with side‑by‑side PDF and comments -->
-<div class="modal-overlay" id="modal" role="dialog" aria-modal="true">
-  <div class="modal">
+  <!-- PDF PREVIEW MODAL with side‑by‑side comments -->
+  <div class="modal" id="pdf-modal">
     <div class="modal-header">
-      <div class="modal-meta">
-        <div class="modal-title" id="modal-title"></div>
-        <div class="modal-author" id="modal-author"></div>
-      </div>
-      <button class="modal-close" id="modal-close" aria-label="Close">✕</button>
-    </div>
-    <div class="modal-preview">
-      <div class="pdf-viewer">
-        <iframe id="modal-frame" title="Book preview"></iframe>
-      </div>
-      <div class="modal-comments" id="modal-comments-container">
-        <!-- Giscus injected here per book -->
+      <div class="modal-title" id="modal-title">Book Title</div>
+      <div class="modal-actions">
+        <a href="#" class="modal-download" id="modal-download" download>Download PDF</a>
+        <button class="modal-close" id="modal-close">Close</button>
       </div>
     </div>
-    <div class="modal-footer">
-      <a class="btn btn-download" id="modal-download" download>
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        Download
-      </a>
-      <button class="btn btn-preview" id="modal-close-footer">Close</button>
+    <div class="modal-body">
+      <div class="pdf-viewer-container">
+        <iframe id="modal-frame"></iframe>
+      </div>
+      <div class="pdf-comments-wrapper" id="pdf-comments-container">
+        <!-- Giscus injected here -->
+      </div>
     </div>
   </div>
-</div>
 
-<script>
-  (function() {
-    let config = null;
-    let books = [];
-    let essays = [];
-    let activeCategory = 'All';
+  <script>
+    let currentView = 'books'; // 'books' or 'articles'
+    let booksData = [];
+    let articlesData = [];
+    let configData = {};
     let searchTerm = '';
 
-    const grid = document.getElementById('grid');
-    const essaysGrid = document.getElementById('essays-grid');
-    const searchInput = document.getElementById('search');
-    const filtersEl = document.getElementById('filters');
-    const countEl = document.getElementById('count');
+    // Elements
+    const gridContainer = document.getElementById('grid-container');
+    const toggleBtnText = document.getElementById('toggle-text');
+    const toggleBtnIcon = document.getElementById('toggle-icon');
+    const currentSectionTitle = document.getElementById('current-section-title');
+    const itemCount = document.getElementById('item-count');
+    const browseSection = document.getElementById('browse-section');
+    const articleReader = document.getElementById('article-reader');
+    const searchInput = document.getElementById('search-input');
 
-    async function loadConfig() {
+    // Init App
+    async function initApp() {
       try {
-        const response = await fetch('styles.yaml');
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
-        const yamlText = await response.text();
-        config = jsyaml.load(yamlText);
+        const [configRes, booksRes, articlesRes] = await Promise.all([
+          fetch('styles.yaml'), fetch('books.yaml'), fetch('articles.yaml')
+        ]);
         
-        applyTheme(config.theme);
-        populateTexts(config.site);
-        injectGoogleAnalytics(config.analytics);
-        injectGlobalComments(config.comments);
-        
-        books = config.books || [];
-        essays = config.essays || [];
-        
-        initCategories();
-        renderEssays();
-        renderBooks();
-      } catch (error) {
-        console.error('Failed to load config.yaml:', error);
-        grid.innerHTML = `<div class="empty"><div class="empty-icon">📚</div><p>Ooops! No Books Found.</p></div>`;
+        const configText = await configRes.text();
+        const booksText = await booksRes.text();
+        const articlesText = await articlesRes.text();
+
+        configData = jsyaml.load(configText);
+        booksData = jsyaml.load(booksText).books || [];
+        articlesData = jsyaml.load(articlesText).articles || [];
+
+        applyConfig();
+        renderGrid();
+      } catch (err) {
+        console.error("Error loading YAML data:", err);
+        gridContainer.innerHTML = `<p style="color:red; text-align:center; grid-column: 1/-1;">Error loading data. Ensure you are running a local server or hosted on GitHub pages.</p>`;
       }
     }
 
-    function injectGoogleAnalytics(analytics) {
-      if (analytics && analytics.google_id) {
-        const script = document.createElement('script');
-        script.async = true;
-        script.src = `https://www.googletagmanager.com/gtag/js?id=${analytics.google_id}`;
-        document.head.appendChild(script);
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', analytics.google_id);
+    function applyConfig() {
+      if (configData.theme) {
+        document.documentElement.style.setProperty('--bg', configData.theme.background);
+        document.documentElement.style.setProperty('--surface', configData.theme.surface);
+        document.documentElement.style.setProperty('--accent', configData.theme.accent);
+        document.documentElement.style.setProperty('--text', configData.theme.text);
+      }
+      if (configData.site) {
+        document.getElementById('site-title').textContent = configData.site.title;
+        document.getElementById('site-subtitle').textContent = configData.site.subtitle;
+      }
+      if (configData.hero) {
+        document.getElementById('hero-heading').textContent = configData.hero.heading;
+        document.getElementById('hero-desc').textContent = configData.hero.description;
       }
     }
 
-    function injectGlobalComments(comments) {
-      if (comments && comments.enabled && comments.repo) {
-        const container = document.getElementById('global-comments');
-        const script = document.createElement('script');
-        script.src = "https://giscus.app/client.js";
-        script.setAttribute("data-repo", comments.repo);
-        if (comments.repoId) script.setAttribute("data-repo-id", comments.repoId);
-        if (comments.category) script.setAttribute("data-category", comments.category);
-        if (comments.categoryId) script.setAttribute("data-category-id", comments.categoryId);
-        script.setAttribute("data-mapping", "pathname");
-        script.setAttribute("data-strict", "0");
-        script.setAttribute("data-reactions-enabled", "1");
-        script.setAttribute("data-emit-metadata", "0");
-        script.setAttribute("data-input-position", "bottom");
-        script.setAttribute("data-theme", "dark");
-        script.setAttribute("data-lang", "en");
-        script.crossOrigin = "anonymous";
-        script.async = true;
-        container.appendChild(script);
-      }
-    }
-
-    function applyTheme(theme) {
-      if (!theme) return;
-      const root = document.documentElement;
-      if (theme.background) root.style.setProperty('--bg', theme.background);
-      if (theme.surface) root.style.setProperty('--surface', theme.surface);
-      if (theme.card) root.style.setProperty('--card', theme.card);
-      if (theme.border) root.style.setProperty('--border', theme.border);
-      if (theme.accent) root.style.setProperty('--accent', theme.accent);
-      if (theme.accentHover) root.style.setProperty('--accent-hover', theme.accentHover);
-      if (theme.text) root.style.setProperty('--text', theme.text);
-      if (theme.muted) root.style.setProperty('--muted', theme.muted);
-      if (theme.modalOverlay) root.style.setProperty('--modal-overlay', theme.modalOverlay);
-      if (theme.headingFont) root.style.setProperty('--heading-font', theme.headingFont);
-      if (theme.bodyFont) root.style.setProperty('--body-font', theme.bodyFont);
-      root.style.setProperty('--hover-lift', theme.cardHoverLift === false ? '0' : '-4px');
-      root.style.setProperty('--hover-shadow', theme.cardHoverShadow === false ? 'none' : '0 12px 40px rgba(0,0,0,0.5)');
-      if (theme.cardRadius) root.style.setProperty('--card-radius', theme.cardRadius);
-      if (theme.buttonRadius) root.style.setProperty('--button-radius', theme.buttonRadius);
-    }
-
-    function populateTexts(site) {
-      document.title = site.pageTitle || site.title || 'Library';
-      document.getElementById('site-title').textContent = site.title || '';
-      document.getElementById('site-subtitle').textContent = site.subtitle || '';
-      if (site.searchPlaceholder) searchInput.placeholder = site.searchPlaceholder;
+    // Toggle View (Books <-> Articles)
+    function toggleView() {
+      currentView = currentView === 'books' ? 'articles' : 'books';
       
-      const heroSection = document.getElementById('hero-section');
-      if (site.hero && site.hero.show !== false) {
-        heroSection.style.display = 'block';
-        document.getElementById('hero-heading').innerHTML = site.hero.heading || '';
-        document.getElementById('hero-desc').textContent = site.hero.description || '';
-        
-        if (site.contact) {
-          const contactEl = document.getElementById('contact-info');
-          let html = '';
-          if (site.contact.email) {
-            html += `<a href="mailto:${site.contact.email}">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
-              ${site.contact.email}</a>`;
-          }
-          if (site.contact.phone) {
-            html += `<a href="tel:${site.contact.phone.replace(/\s+/g, '')}">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
-              ${site.contact.phone}</a>`;
-          }
-          if (html) {
-            contactEl.innerHTML = html;
-            contactEl.style.display = 'flex';
-          }
-        }
+      if (currentView === 'books') {
+        toggleBtnText.textContent = "Switch to Articles";
+        toggleBtnIcon.textContent = "📰";
+        currentSectionTitle.textContent = "All Books";
+      } else {
+        toggleBtnText.textContent = "Switch to Books";
+        toggleBtnIcon.textContent = "📚";
+        currentSectionTitle.textContent = "All Articles & Essays";
       }
       
-      const footerEl = document.getElementById('footer-text');
-      if (site.footer && site.footer.show !== false) {
-        footerEl.style.display = 'block';
-        footerEl.innerHTML = site.footer.text || '';
-      }
+      closeArticle(); // If they toggle while reading, go back to browse
+      renderGrid();
     }
 
-    function initCategories() {
-      const categories = config.categories || ['All', ...new Set(books.map(b => b.category))];
-      filtersEl.innerHTML = '<span class="filter-label">Filter:</span>';
-      categories.forEach(cat => {
-        const btn = document.createElement('button');
-        btn.className = 'filter-btn' + (cat === 'All' ? ' active' : '');
-        btn.textContent = cat;
-        btn.addEventListener('click', () => {
-          activeCategory = cat;
-          document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-          btn.classList.add('active');
-          renderBooks();
-        });
-        filtersEl.appendChild(btn);
-      });
-    }
-
-    function renderEssays() {
-      if (!essays.length) return;
-      document.getElementById('essays-container').style.display = 'block';
-      document.getElementById('library-title').style.display = 'flex';
-      
-      let html = '';
-      essays.forEach((essay, i) => {
-        html += `
-          <div class="card essay-card" style="animation-delay: ${i * 0.05}s">
-            <div class="card-body">
-              <span class="category-tag">${essay.category || 'Essay'}</span>
-              <div class="card-title">${essay.title}</div>
-              <div class="card-author">${essay.author}</div>
-              <div class="card-desc">${essay.description}</div>
-              <div class="card-actions">
-                <a class="btn btn-download" href="${essay.file || 'articles.html'}">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
-                  Read Articles
-                </a>
-              </div>
-            </div>
-          </div>
-        `;
-      });
-      essaysGrid.innerHTML = html;
-    }
-
-    function renderBooks() {
-      const query = searchTerm.toLowerCase().trim();
-      const filtered = books.filter(book => {
-        const matchCat = activeCategory === 'All' || book.category === activeCategory;
-        const matchSearch = !query || 
-          book.title.toLowerCase().includes(query) || 
-          book.author.toLowerCase().includes(query);
-        return matchCat && matchSearch;
-      });
-
-      countEl.textContent = `${filtered.length} book${filtered.length !== 1 ? 's' : ''}`;
-      
-      if (!filtered.length) {
-        grid.innerHTML = `<div class="empty"><div class="empty-icon">📖</div><p>No books match your search.</p></div>`;
-        return;
-      }
-
-      let html = '';
-      filtered.forEach((book, i) => {
-        const thumbHtml = book.thumbnail && book.thumbnail.trim() !== ''
-          ? `<img src="${book.thumbnail}" alt="${book.title}" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">`
-          : '';
-        const placeholderHtml = `
-          <div class="placeholder" ${thumbHtml ? 'style="display:none;"' : ''}>
-            <div class="placeholder-icon">📖</div>
-            <div class="placeholder-title">${book.title}</div>
-          </div>
-        `;
-        
-        const bookData = JSON.stringify(book).replace(/'/g, "&apos;").replace(/"/g, '&quot;');
-        
-        html += `
-          <div class="card" data-book='${bookData}' style="animation-delay: ${i * 0.05}s">
-            <div class="card-thumb">
-              ${thumbHtml}
-              ${placeholderHtml}
-              <span class="category-tag">${book.category}</span>
-            </div>
-            <div class="card-body">
-              <div class="card-title">${book.title}</div>
-              <div class="card-author">${book.author}</div>
-              <div class="card-desc">${book.description}</div>
-              <div class="card-actions">
-                <a class="btn btn-download" href="${book.file}" download>
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                  Download
-                </a>
-                <button class="btn btn-preview">
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-                  Preview
-                </button>
-              </div>
-            </div>
-          </div>
-        `;
-      });
-      grid.innerHTML = html;
-    }
-
-    // Event delegation for preview and card click
-    document.addEventListener('click', (e) => {
-      if (e.target.closest('.btn-preview')) {
-        e.preventDefault();
-        const card = e.target.closest('.card');
-        if (card && card.dataset.book) openModal(JSON.parse(card.dataset.book.replace(/&apos;/g, "'").replace(/&quot;/g, '"')));
-        return;
-      }
-      
-      const card = e.target.closest('.card');
-      if (card && !e.target.closest('.btn-download')) {
-        if (card.dataset.book) openModal(JSON.parse(card.dataset.book.replace(/&apos;/g, "'").replace(/&quot;/g, '"')));
-      }
+    // Search Logic
+    searchInput.addEventListener('input', (e) => {
+      searchTerm = e.target.value.toLowerCase();
+      renderGrid();
     });
 
-    // Modal logic with per‑book comments
-    const modal = document.getElementById('modal');
-    const modalTitle = document.getElementById('modal-title');
-    const modalAuthor = document.getElementById('modal-author');
-    const modalFrame = document.getElementById('modal-frame');
-    const modalDownload = document.getElementById('modal-download');
-    const modalComments = document.getElementById('modal-comments-container');
+    // Render Grid
+    function renderGrid() {
+      gridContainer.innerHTML = '';
+      const data = currentView === 'books' ? booksData : articlesData;
+      
+      const filtered = data.filter(item => 
+        (item.title && item.title.toLowerCase().includes(searchTerm)) || 
+        (item.author && item.author.toLowerCase().includes(searchTerm))
+      );
 
-    function openModal(book) {
-      modalTitle.textContent = book.title;
-      modalAuthor.textContent = 'by ' + book.author;
-      
-      const pdfUrl = new URL(book.file, window.location.href).href;
-      const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-      
-      if (isMobile) {
-        modalFrame.src = `https://docs.google.com/viewer?url=${encodeURIComponent(pdfUrl)}&embedded=true`;
-      } else {
-        modalFrame.src = pdfUrl + '#view=FitH';
-      }
-      
-      modalFrame.onerror = () => {
-        modalFrame.srcdoc = `
-          <html style="background:#0d0d0d;display:flex;align-items:center;justify-content:center;height:100%;font-family:system-ui,sans-serif;">
-            <div style="text-align:center;color:#e8e0d0;padding:1rem;">
-              <div style="font-size:3rem;margin-bottom:1rem;">📄❌</div>
-              <h2 style="font-weight:400;margin-bottom:0.5rem;">Preview Unavailable</h2>
-              <p style="color:#7a7060;">The PDF could not be loaded.<br>Try downloading it instead.</p>
-            </div>
-          </html>
+      itemCount.textContent = `${filtered.length} items`;
+
+      filtered.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        
+        const thumbSrc = item.thumbnail || 'https://via.placeholder.com/300x400/161616/7a7060?text=No+Cover';
+        
+        let actionBtnHTML = '';
+        if (currentView === 'books') {
+          actionBtnHTML = `<button class="btn" onclick="openBookModal('${item.file}', '${item.title.replace(/'/g, "\\'")}')">Preview PDF</button>`;
+        } else {
+          const idx = data.indexOf(item);
+          actionBtnHTML = `<button class="btn" onclick="openArticle(${idx})">Read Article</button>`;
+        }
+
+        card.innerHTML = `
+          <div class="card-thumb">
+            <img src="${thumbSrc}" alt="${item.title}" onerror="this.src='https://via.placeholder.com/300x400/161616/7a7060?text=Error'">
+          </div>
+          <div class="card-body">
+            <span class="category-tag">${item.category || 'Uncategorized'}</span>
+            <div class="card-title">${item.title}</div>
+            <div class="card-author">By ${item.author}</div>
+            <div class="card-desc">${item.description || ''}</div>
+            ${actionBtnHTML}
+          </div>
         `;
+        gridContainer.appendChild(card);
+      });
+    }
+
+    // --- CUSTOM SHORTCODE PARSER FOR .TXT ESSAYS ---
+    function parseCustomCodes(text) {
+      let html = text
+        .replace(/\[h1\](.*?)\[\/h1\]/gis, '<h1>$1</h1>')
+        .replace(/\[h2\](.*?)\[\/h2\]/gis, '<h2>$1</h2>')
+        .replace(/\[h3\](.*?)\[\/h3\]/gis, '<h3>$1</h3>')
+        .replace(/\[b\](.*?)\[\/b\]/gis, '<strong>$1</strong>')
+        .replace(/\[i\](.*?)\[\/i\]/gis, '<em>$1</em>')
+        .replace(/\[u\](.*?)\[\/u\]/gis, '<u>$1</u>')
+        .replace(/\[color=(.*?)\](.*?)\[\/color\]/gis, '<span style="color:$1">$2</span>')
+        .replace(/\[center\](.*?)\[\/center\]/gis, '<div style="text-align:center">$1</div>')
+        .replace(/\[quote\](.*?)\[\/quote\]/gis, '<blockquote>$1</blockquote>')
+        .replace(/\[img=(.*?)\]/gis, '<img src="$1" alt="Image">');
+
+      html = html.split(/\n\s*\n/).map(p => `<p>${p.replace(/\n/g, '<br>')}</p>`).join('');
+      
+      return html;
+    }
+
+    // --- ARTICLE HANDLING ---
+    async function openArticle(index) {
+      const article = articlesData[index];
+      
+      document.getElementById('read-title').textContent = article.title;
+      document.getElementById('read-author').textContent = `By ${article.author}`;
+      document.getElementById('read-category').textContent = article.category;
+      document.getElementById('read-content').innerHTML = '<p>Loading content...</p>';
+
+      browseSection.style.display = 'none';
+      articleReader.style.display = 'block';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      try {
+        const response = await fetch(article.file);
+        if (!response.ok) throw new Error("File not found");
+        const textContent = await response.text();
+        document.getElementById('read-content').innerHTML = parseCustomCodes(textContent);
+      } catch (err) {
+        document.getElementById('read-content').innerHTML = `
+          <p style="color: #c9a84c; font-style: italic;">
+            ⚠️ The essay content could not be loaded from <code>${article.file}</code>.<br>
+            You can still read and leave comments below.
+          </p>
+        `;
+      } finally {
+        loadGiscus(article.title);
+      }
+    }
+
+    function closeArticle() {
+      browseSection.style.display = 'block';
+      articleReader.style.display = 'none';
+      document.getElementById('giscus-container').innerHTML = '';
+    }
+
+    // --- GISCUS FOR ARTICLES ---
+    function loadGiscus(articleTitle) {
+      const container = document.getElementById('giscus-container');
+      container.innerHTML = '';
+
+      if (!configData.comments?.enabled) return;
+
+      const script = document.createElement('script');
+      script.src = "https://giscus.app/client.js";
+      script.setAttribute("data-repo", configData.comments.repo);
+      if (configData.comments.repoId) script.setAttribute("data-repo-id", configData.comments.repoId);
+      if (configData.comments.category) script.setAttribute("data-category", configData.comments.category);
+      if (configData.comments.categoryId) script.setAttribute("data-category-id", configData.comments.categoryId);
+      script.setAttribute("data-mapping", "specific");
+      script.setAttribute("data-term", articleTitle);
+      script.setAttribute("data-strict", "0");
+      script.setAttribute("data-reactions-enabled", "1");
+      script.setAttribute("data-emit-metadata", "0");
+      script.setAttribute("data-input-position", "bottom");
+      script.setAttribute("data-theme", "dark");
+      script.setAttribute("data-lang", "en");
+      script.setAttribute("crossorigin", "anonymous");
+      script.async = true;
+
+      script.onerror = () => {
+        console.error('Giscus failed to load for article.');
+        container.innerHTML = '<p style="color: var(--muted); padding: 1rem;">⚠️ Comments could not be loaded. Check repository settings.</p>';
+      };
+
+      container.appendChild(script);
+    }
+
+    // --- BOOK MODAL HANDLING (with PDF comments) ---
+    const modal = document.getElementById('pdf-modal');
+    const modalFrame = document.getElementById('modal-frame');
+    
+    function openBookModal(pdfUrl, title) {
+      document.getElementById('modal-title').textContent = title;
+      
+      const viewerUrl = `https://docs.google.com/viewer?url=${encodeURIComponent(
+        window.location.origin + window.location.pathname.replace('index.html', '') + pdfUrl
+      )}&embedded=true`;
+      
+      modalFrame.src = viewerUrl;
+      
+      modalFrame.onerror = function() {
+        modalFrame.outerHTML = `<div style="padding:2rem;text-align:center;color:var(--text);"><p>Preview unavailable. You can still download and comment below.</p></div>`;
       };
       
-      modalDownload.href = book.file;
-      modalDownload.download = book.title.replace(/\s+/g, '_') + '.pdf';
+      const dlBtn = document.getElementById('modal-download');
+      dlBtn.href = pdfUrl;
+      dlBtn.download = title.replace(/\s+/g, '_') + '.pdf';
       
-      // Load Giscus comments for this specific book
-      loadModalComments(book.title);
+      // Load comments for this PDF
+      loadPdfComments(title);
       
       modal.classList.add('open');
       document.body.style.overflow = 'hidden';
     }
-    
-    function loadModalComments(bookTitle) {
-      modalComments.innerHTML = '';
-      if (!config.comments || !config.comments.enabled || !config.comments.repo) return;
+
+    function closeBookModal() {
+      modal.classList.remove('open');
+      modalFrame.src = '';
+      document.getElementById('pdf-comments-container').innerHTML = '';
+      document.body.style.overflow = '';
+    }
+
+    function loadPdfComments(bookTitle) {
+      const container = document.getElementById('pdf-comments-container');
+      container.innerHTML = '';
+      
+      if (!configData.comments?.enabled) return;
       
       const script = document.createElement('script');
       script.src = 'https://giscus.app/client.js';
-      script.setAttribute('data-repo', config.comments.repo);
-      if (config.comments.repoId) script.setAttribute('data-repo-id', config.comments.repoId);
-      if (config.comments.category) script.setAttribute('data-category', config.comments.category);
-      if (config.comments.categoryId) script.setAttribute('data-category-id', config.comments.categoryId);
+      script.setAttribute('data-repo', configData.comments.repo);
+      if (configData.comments.repoId) script.setAttribute('data-repo-id', configData.comments.repoId);
+      if (configData.comments.category) script.setAttribute('data-category', configData.comments.category);
+      if (configData.comments.categoryId) script.setAttribute('data-category-id', configData.comments.categoryId);
       script.setAttribute('data-mapping', 'specific');
       script.setAttribute('data-term', bookTitle);
       script.setAttribute('data-strict', '0');
@@ -836,40 +817,24 @@
       script.setAttribute('data-input-position', 'bottom');
       script.setAttribute('data-theme', 'dark');
       script.setAttribute('data-lang', 'en');
-      script.crossOrigin = 'anonymous';
+      script.setAttribute('crossorigin', 'anonymous');
       script.async = true;
       
       script.onerror = () => {
-        modalComments.innerHTML = '<p style="color: var(--muted); padding: 1rem;">⚠️ Comments could not be loaded. Check repository settings.</p>';
+        console.error('Giscus failed to load for PDF.');
+        container.innerHTML = '<p style="color: var(--muted); padding: 1rem;">⚠️ Comments could not be loaded. Check repository settings.</p>';
       };
       
-      modalComments.appendChild(script);
+      container.appendChild(script);
+      console.log('Loading Giscus for PDF:', bookTitle);
     }
 
-    function closeModal() {
-      modal.classList.remove('open');
-      modalFrame.src = '';
-      modalComments.innerHTML = '';
-      document.body.style.overflow = '';
-    }
+    document.getElementById('modal-close').addEventListener('click', closeBookModal);
+    modal.addEventListener('click', e => { if(e.target === modal) closeBookModal(); });
+    document.addEventListener('keydown', e => { if(e.key === 'Escape') closeBookModal(); });
 
-    document.getElementById('modal-close').addEventListener('click', closeModal);
-    document.getElementById('modal-close-footer').addEventListener('click', closeModal);
-    modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
-    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
-
-    // Search debounce
-    let searchTimeout;
-    searchInput.addEventListener('input', () => {
-      clearTimeout(searchTimeout);
-      searchTimeout = setTimeout(() => {
-        searchTerm = searchInput.value;
-        renderBooks();
-      }, 200);
-    });
-
-    loadConfig();
-  })();
-</script>
+    // Initialize
+    window.addEventListener('DOMContentLoaded', initApp);
+  </script>
 </body>
 </html>
