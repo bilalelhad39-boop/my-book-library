@@ -691,31 +691,37 @@
     // --- GISCUS INTEGRATION ---
     function loadGiscus(articleTitle) {
       const container = document.getElementById('giscus-container');
-      container.innerHTML = ''; // Clear previous
-
-      if (!configData.comments || !configData.comments.enabled) return;
-
+      container.innerHTML = '';
+    
+      if (!configData.comments?.enabled) {
+        console.warn('Giscus comments disabled in config.');
+        return;
+      }
+    
       const script = document.createElement('script');
-      script.src = "https://giscus.app/client.js";
-      script.setAttribute("data-repo", configData.comments.repo);
-      
-      // If you have specific repo/category IDs in config, apply them:
-      if (configData.comments.repoId) script.setAttribute("data-repo-id", configData.comments.repoId);
-      if (configData.comments.category) script.setAttribute("data-category", configData.comments.category);
-      if (configData.comments.categoryId) script.setAttribute("data-category-id", configData.comments.categoryId);
-      
-      script.setAttribute("data-mapping", "specific");
-      script.setAttribute("data-term", articleTitle); // Maps comments to the Article Title
-      script.setAttribute("data-strict", "0");
-      script.setAttribute("data-reactions-enabled", "1");
-      script.setAttribute("data-emit-metadata", "0");
-      script.setAttribute("data-input-position", "bottom");
-      script.setAttribute("data-theme", "dark");
-      script.setAttribute("data-lang", "en");
-      script.setAttribute("crossorigin", "anonymous");
+      script.src = 'https://giscus.app/client.js';
+      script.setAttribute('data-repo', configData.comments.repo);
+      if (configData.comments.repoId) script.setAttribute('data-repo-id', configData.comments.repoId);
+      if (configData.comments.category) script.setAttribute('data-category', configData.comments.category);
+      if (configData.comments.categoryId) script.setAttribute('data-category-id', configData.comments.categoryId);
+      script.setAttribute('data-mapping', 'specific');
+      script.setAttribute('data-term', articleTitle);
+      script.setAttribute('data-strict', '0');
+      script.setAttribute('data-reactions-enabled', '1');
+      script.setAttribute('data-emit-metadata', '0');
+      script.setAttribute('data-input-position', 'bottom');
+      script.setAttribute('data-theme', 'dark');
+      script.setAttribute('data-lang', 'en');
+      script.setAttribute('crossorigin', 'anonymous');
       script.async = true;
-
+    
+      script.onerror = () => {
+        console.error('Giscus script failed to load. Check repo/public settings.');
+        container.innerHTML = '<p style="color: #7a7060;">⚠️ Comments could not be loaded. Please verify the repository configuration.</p>';
+      };
+    
       container.appendChild(script);
+      console.log('Giscus script appended for article:', articleTitle);
     }
 
     // --- BOOK MODAL HANDLING ---
