@@ -730,10 +730,15 @@
     }
   }
   
+  // Inside populateTexts, after setting contact:
   const footerEl = document.getElementById('footer-text');
   if (site.footer && site.footer.show !== false) {
     footerEl.style.display = 'block';
     footerEl.innerHTML = site.footer.text || '';
+  } else if (site.contact && (site.contact.email || site.contact.phone)) {
+    // Show footer only for contact
+    footerEl.style.display = 'block';
+    footerEl.innerHTML = ''; // no text, just contact below
   }
 }
 
