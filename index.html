@@ -1043,39 +1043,37 @@
         document.body.style.overflow = 'hidden';
       }
 
-      function loadModalComments(title) {
-        const container = document.getElementById('modal-comments-container');
-        container.innerHTML = ''; // Clear previous
-      
-        if (!config.comments?.enabled || !config.comments.repo) {
-          container.innerHTML = '<p style="color: var(--muted); padding: 1rem;">Comments disabled.</p>';
-          return;
-        }
-      
-        // Create a fresh Giscus script each time (reliable method)
-        const script = document.createElement('script');
-        script.src = 'https://giscus.app/client.js';
-        script.setAttribute('data-repo', config.comments.repo);
-        if (config.comments.repoId) script.setAttribute('data-repo-id', config.comments.repoId);
-        if (config.comments.category) script.setAttribute('data-category', config.comments.category);
-        if (config.comments.categoryId) script.setAttribute('data-category-id', config.comments.categoryId);
-        script.setAttribute('data-mapping', 'specific');
-        script.setAttribute('data-term', title);
-        script.setAttribute('data-strict', '0');
-        script.setAttribute('data-reactions-enabled', '1');
-        script.setAttribute('data-emit-metadata', '0');
-        script.setAttribute('data-input-position', 'bottom');
-        script.setAttribute('data-theme', 'dark');
-        script.setAttribute('data-lang', 'en');
-        script.setAttribute('crossorigin', 'anonymous');
-        script.async = true;
-      
-        script.onerror = () => {
-          container.innerHTML = '<p style="color: var(--muted); padding: 1rem;">⚠️ Comments failed to load.</p>';
-        };
-      
-        container.appendChild(script);
-      }
+      function loadPdfComments(bookTitle) {
+  const container = document.getElementById('pdf-comments-container');
+  container.innerHTML = ''; // Clear previous comments
+  
+  if (!configData.comments?.enabled) return;
+  
+  const script = document.createElement('script');
+  script.src = 'https://giscus.app/client.js';
+  script.setAttribute('data-repo', configData.comments.repo);
+  if (configData.comments.repoId) script.setAttribute('data-repo-id', configData.comments.repoId);
+  if (configData.comments.category) script.setAttribute('data-category', configData.comments.category);
+  if (configData.comments.categoryId) script.setAttribute('data-category-id', configData.comments.categoryId);
+  script.setAttribute('data-mapping', 'specific');
+  script.setAttribute('data-term', bookTitle);      // Comments tied to book title
+  script.setAttribute('data-strict', '0');
+  script.setAttribute('data-reactions-enabled', '1');
+  script.setAttribute('data-emit-metadata', '0');
+  script.setAttribute('data-input-position', 'bottom');
+  script.setAttribute('data-theme', 'dark');
+  script.setAttribute('data-lang', 'en');
+  script.setAttribute('crossorigin', 'anonymous');
+  script.async = true;
+  
+  script.onerror = () => {
+    console.error('Giscus failed to load for PDF.');
+    container.innerHTML = '<p style="color: var(--muted); padding: 1rem;">⚠️ Comments could not be loaded. Check repository settings.</p>';
+  };
+  
+  container.appendChild(script);
+  console.log('Loading Giscus for PDF:', bookTitle);
+}
       
       function closeModal() {
         modal.classList.remove('open');
