@@ -1,0 +1,26 @@
+site:
+  title: "Teere Guede Bousso"
+  subtitle: "/ Library"
+  
+hero:
+  heading: "The House of Knowledge"
+  description: "Browse, preview, and download freely. Switch between our Books and Essays collections."
+
+theme:
+  background: "#0d0d0d"
+  surface: "#161616"
+  card: "#1c1c1c"
+  border: "#2a2a2a"
+  accent: "#c9a84c"
+  accentHover: "#e8c97a"
+  text: "#e8e0d0"
+  muted: "#7a7060"
+
+comments:
+  enabled: true
+  provider: "giscus"
+  repo: "mourtadade44-lab/my-book-library"
+  # NOTE: To use Giscus, you may need to add repoId, category, and categoryId depending on your GitHub setup.
+  # repoId: "R_kgDOXXXXXX" 
+  # category: "Announcements"
+  # categoryId: "DIC_kwDOXXXXXX"

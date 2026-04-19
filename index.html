@@ -1,0 +1,762 @@
+html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The House of Knowledge</title>
+  
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js"></script>
+  
+  <style>
+    /* ----- BASE STYLES ----- */
+    :root {
+      --bg: #0d0d0d;
+      --surface: #161616;
+      --card: #1c1c1c;
+      --border: #2a2a2a;
+      --accent: #c9a84c;
+      --accent-hover: #e8c97a;
+      --text: #e8e0d0;
+      --muted: #7a7060;
+      --modal-overlay: rgba(0,0,0,0.88);
+      --heading-font: 'Playfair Display', serif;
+      --body-font: 'DM Sans', sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--body-font);
+      font-weight: 300;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ----- HEADER & NAV ----- */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(13,13,13,0.92);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 1.5rem;
+    }
+
+    .header-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 70px;
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: baseline;
+      gap: 0.75rem;
+    }
+
+    .logo {
+      font-family: var(--heading-font);
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text);
+      text-decoration: none;
+      letter-spacing: -0.02em;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      font-size: 0.9rem;
+      font-style: italic;
+    }
+
+    .view-toggle {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-family: var(--body-font);
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .view-toggle:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    /* ----- HERO ----- */
+    .hero {
+      text-align: center;
+      padding: 5rem 1.5rem 3rem;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .hero h1 {
+      font-family: var(--heading-font);
+      font-size: 3.5rem;
+      font-weight: 400;
+      margin-bottom: 1rem;
+      line-height: 1.1;
+    }
+
+    .hero p {
+      color: var(--muted);
+      font-size: 1.1rem;
+      line-height: 1.6;
+    }
+
+    /* ----- SEARCH ----- */
+    .search-container {
+      max-width: 600px;
+      margin: 0 auto 3rem;
+      padding: 0 1.5rem;
+      position: relative;
+    }
+
+    .search-input {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 1rem 1.5rem;
+      border-radius: 30px;
+      font-family: var(--body-font);
+      font-size: 1rem;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .search-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px var(--accent);
+    }
+
+    /* ----- MAIN LAYOUT ----- */
+    main {
+      flex: 1;
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 1.5rem 4rem;
+      width: 100%;
+    }
+
+    .section-title {
+      font-family: var(--heading-font);
+      font-size: 2rem;
+      font-weight: 400;
+      margin-bottom: 2rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+
+    /* ----- GRID ----- */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 2rem;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      border-color: var(--accent);
+      box-shadow: 0 12px 24px rgba(0,0,0,0.4);
+    }
+
+    .card-thumb {
+      aspect-ratio: 3/4;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .card-thumb::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 40%);
+    }
+
+    .card-body {
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+
+    .category-tag {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+    }
+
+    .card-title {
+      font-family: var(--heading-font);
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 0.25rem;
+      line-height: 1.3;
+    }
+
+    .card-author {
+      color: var(--muted);
+      font-size: 0.85rem;
+      margin-bottom: 1rem;
+    }
+
+    .card-desc {
+      font-size: 0.9rem;
+      line-height: 1.5;
+      color: #aaa;
+      margin-bottom: 1.5rem;
+      flex: 1;
+    }
+
+    .btn {
+      display: inline-block;
+      width: 100%;
+      background: var(--text);
+      color: var(--bg);
+      padding: 10px;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      text-align: center;
+      text-decoration: none;
+      cursor: pointer;
+      border: none;
+      transition: background 0.2s;
+    }
+
+    .btn:hover {
+      background: var(--accent-hover);
+    }
+
+    /* ----- ARTICLE READER VIEW ----- */
+    #article-reader {
+      display: none;
+      max-width: 800px;
+      margin: 0 auto;
+      background: var(--surface);
+      padding: 3rem;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+    }
+
+    .back-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      padding: 6px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-bottom: 2rem;
+      transition: all 0.2s;
+      font-family: var(--body-font);
+    }
+
+    .back-btn:hover {
+      color: var(--text);
+      border-color: var(--text);
+    }
+
+    .article-header {
+      margin-bottom: 2rem;
+      padding-bottom: 2rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .article-header h1 {
+      font-family: var(--heading-font);
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .article-meta {
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    /* Styled Text inside Articles */
+    .article-content {
+      line-height: 1.8;
+      font-size: 1.1rem;
+      color: #dfdfdf;
+    }
+    
+    .article-content p { margin-bottom: 1.5rem; }
+    .article-content h1, .article-content h2, .article-content h3 {
+      font-family: var(--heading-font);
+      color: var(--accent);
+      margin: 2rem 0 1rem;
+    }
+    .article-content strong { color: #fff; font-weight: 700; }
+    .article-content em { color: #ccc; }
+    .article-content blockquote {
+      border-left: 4px solid var(--accent);
+      padding-left: 1rem;
+      margin: 1.5rem 0;
+      font-style: italic;
+      color: var(--muted);
+    }
+    .article-content img {
+      max-width: 100%;
+      border-radius: 8px;
+      margin: 1.5rem 0;
+    }
+
+    /* ----- GISCUS COMMENTS ----- */
+    .giscus-wrapper {
+      margin-top: 4rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+    }
+
+    /* ----- MODAL (BOOKS) ----- */
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: var(--modal-overlay);
+      backdrop-filter: blur(8px);
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+
+    .modal.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 1.5rem;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .modal-title {
+      font-family: var(--heading-font);
+      font-weight: 700;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .modal-close, .modal-download {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 6px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: all 0.2s;
+    }
+
+    .modal-download {
+      background: var(--accent);
+      color: var(--bg);
+      border-color: var(--accent);
+    }
+
+    .modal-close:hover { background: var(--border); }
+    .modal-download:hover { background: var(--accent-hover); }
+
+    .modal-body {
+      flex: 1;
+      position: relative;
+    }
+
+    .modal-body iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+      background: #fff;
+    }
+    
+    @media (max-width: 768px) {
+      .grid { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
+      .hero h1 { font-size: 2.5rem; }
+      #article-reader { padding: 1.5rem; border: none; border-radius: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-inner">
+      <div class="logo-container">
+        <a href="#" class="logo" id="site-title">Teere Guede Bousso</a>
+        <span class="subtitle" id="site-subtitle">/ Library</span>
+      </div>
+      <button class="view-toggle" id="view-toggle-btn" onclick="toggleView()">
+        <span id="toggle-icon">📰</span> <span id="toggle-text">Switch to Articles</span>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <!-- HERO & SEARCH (Hidden during Article reading) -->
+    <div id="browse-section">
+      <div class="hero">
+        <h1 id="hero-heading">The House of Knowledge</h1>
+        <p id="hero-desc">Browse, preview, and explore freely. Switch between our collection of Books and Essays.</p>
+      </div>
+
+      <div class="search-container">
+        <input type="text" id="search-input" class="search-input" placeholder="Search by title or author…">
+      </div>
+
+      <div class="section-title">
+        <span id="current-section-title">All Books</span>
+        <span id="item-count" style="font-size: 1rem; color: var(--muted);">0 items</span>
+      </div>
+
+      <!-- GRID FOR BOOKS / ARTICLES -->
+      <div class="grid" id="grid-container"></div>
+    </div>
+
+    <!-- ARTICLE READER VIEW -->
+    <div id="article-reader">
+      <button class="back-btn" onclick="closeArticle()">← Back to Articles</button>
+      
+      <div class="article-header">
+        <span class="category-tag" id="read-category">Category</span>
+        <h1 id="read-title">Article Title</h1>
+        <div class="article-meta" id="read-author">By Author</div>
+      </div>
+      
+      <div class="article-content" id="read-content">
+        <!-- Parsed text content goes here -->
+      </div>
+
+      <!-- GISCUS CONTAINER -->
+      <div class="giscus-wrapper" id="giscus-container">
+        <!-- Script injected here -->
+      </div>
+    </div>
+  </main>
+
+  <!-- PDF PREVIEW MODAL -->
+  <div class="modal" id="pdf-modal">
+    <div class="modal-header">
+      <div class="modal-title" id="modal-title">Book Title</div>
+      <div class="modal-actions">
+        <a href="#" class="modal-download" id="modal-download" download>Download PDF</a>
+        <button class="modal-close" id="modal-close">Close</button>
+      </div>
+    </div>
+    <div class="modal-body">
+      <iframe id="modal-frame"></iframe>
+    </div>
+  </div>
+
+  <script>
+    let currentView = 'books'; // 'books' or 'articles'
+    let booksData = [];
+    let articlesData = [];
+    let configData = {};
+    let searchTerm = '';
+
+    // Elements
+    const gridContainer = document.getElementById('grid-container');
+    const toggleBtnText = document.getElementById('toggle-text');
+    const toggleBtnIcon = document.getElementById('toggle-icon');
+    const currentSectionTitle = document.getElementById('current-section-title');
+    const itemCount = document.getElementById('item-count');
+    const browseSection = document.getElementById('browse-section');
+    const articleReader = document.getElementById('article-reader');
+    const searchInput = document.getElementById('search-input');
+
+    // Init App
+    async function initApp() {
+      try {
+        const [configRes, booksRes, articlesRes] = await Promise.all([
+          fetch('styles.yaml'), fetch('books.yaml'), fetch('articles.yaml')
+        ]);
+        
+        const configText = await configRes.text();
+        const booksText = await booksRes.text();
+        const articlesText = await articlesRes.text();
+
+        configData = jsyaml.load(configText);
+        booksData = jsyaml.load(booksText).books || [];
+        articlesData = jsyaml.load(articlesText).articles || [];
+
+        applyConfig();
+        renderGrid();
+      } catch (err) {
+        console.error("Error loading YAML data:", err);
+        gridContainer.innerHTML = `<p style="color:red; text-align:center; grid-column: 1/-1;">Error loading data. Ensure you are running a local server or hosted on GitHub pages.</p>`;
+      }
+    }
+
+    function applyConfig() {
+      if (configData.theme) {
+        document.documentElement.style.setProperty('--bg', configData.theme.background);
+        document.documentElement.style.setProperty('--surface', configData.theme.surface);
+        document.documentElement.style.setProperty('--accent', configData.theme.accent);
+        document.documentElement.style.setProperty('--text', configData.theme.text);
+      }
+      if (configData.site) {
+        document.getElementById('site-title').textContent = configData.site.title;
+        document.getElementById('site-subtitle').textContent = configData.site.subtitle;
+      }
+      if (configData.hero) {
+        document.getElementById('hero-heading').textContent = configData.hero.heading;
+        document.getElementById('hero-desc').textContent = configData.hero.description;
+      }
+    }
+
+    // Toggle View (Books <-> Articles)
+    function toggleView() {
+      currentView = currentView === 'books' ? 'articles' : 'books';
+      
+      if (currentView === 'books') {
+        toggleBtnText.textContent = "Switch to Articles";
+        toggleBtnIcon.textContent = "📰";
+        currentSectionTitle.textContent = "All Books";
+      } else {
+        toggleBtnText.textContent = "Switch to Books";
+        toggleBtnIcon.textContent = "📚";
+        currentSectionTitle.textContent = "All Articles & Essays";
+      }
+      
+      closeArticle(); // If they toggle while reading, go back to browse
+      renderGrid();
+    }
+
+    // Search Logic
+    searchInput.addEventListener('input', (e) => {
+      searchTerm = e.target.value.toLowerCase();
+      renderGrid();
+    });
+
+    // Render Grid
+    function renderGrid() {
+      gridContainer.innerHTML = '';
+      const data = currentView === 'books' ? booksData : articlesData;
+      
+      const filtered = data.filter(item => 
+        (item.title && item.title.toLowerCase().includes(searchTerm)) || 
+        (item.author && item.author.toLowerCase().includes(searchTerm))
+      );
+
+      itemCount.textContent = `${filtered.length} items`;
+
+      filtered.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        
+        // Use a generic placeholder if thumbnail is missing
+        const thumbSrc = item.thumbnail || 'https://via.placeholder.com/300x400/161616/7a7060?text=No+Cover';
+        
+        // Button Logic
+        let actionBtnHTML = '';
+        if (currentView === 'books') {
+          actionBtnHTML = `<button class="btn" onclick="openBookModal('${item.file}', '${item.title.replace(/'/g, "\\'")}')">Preview PDF</button>`;
+        } else {
+          // Pass index to fetch the right article
+          const idx = data.indexOf(item);
+          actionBtnHTML = `<button class="btn" onclick="openArticle(${idx})">Read Article</button>`;
+        }
+
+        card.innerHTML = `
+          <div class="card-thumb">
+            <img src="${thumbSrc}" alt="${item.title}" onerror="this.src='https://via.placeholder.com/300x400/161616/7a7060?text=Error'">
+          </div>
+          <div class="card-body">
+            <span class="category-tag">${item.category || 'Uncategorized'}</span>
+            <div class="card-title">${item.title}</div>
+            <div class="card-author">By ${item.author}</div>
+            <div class="card-desc">${item.description || ''}</div>
+            ${actionBtnHTML}
+          </div>
+        `;
+        gridContainer.appendChild(card);
+      });
+    }
+
+    // --- CUSTOM SHORTCODE PARSER FOR .TXT ESSAYS ---
+    function parseCustomCodes(text) {
+      let html = text
+        // Headings
+        .replace(/\[h1\](.*?)\[\/h1\]/gis, '<h1>$1</h1>')
+        .replace(/\[h2\](.*?)\[\/h2\]/gis, '<h2>$1</h2>')
+        .replace(/\[h3\](.*?)\[\/h3\]/gis, '<h3>$1</h3>')
+        // Inline formatting
+        .replace(/\[b\](.*?)\[\/b\]/gis, '<strong>$1</strong>')
+        .replace(/\[i\](.*?)\[\/i\]/gis, '<em>$1</em>')
+        .replace(/\[u\](.*?)\[\/u\]/gis, '<u>$1</u>')
+        // Colors & Alignment
+        .replace(/\[color=(.*?)\](.*?)\[\/color\]/gis, '<span style="color:$1">$2</span>')
+        .replace(/\[center\](.*?)\[\/center\]/gis, '<div style="text-align:center">$1</div>')
+        // Blocks
+        .replace(/\[quote\](.*?)\[\/quote\]/gis, '<blockquote>$1</blockquote>')
+        // Media
+        .replace(/\[img=(.*?)\]/gis, '<img src="$1" alt="Image">');
+
+      // Paragraph formatting: Split by double newline to create <p> tags
+      html = html.split(/\n\s*\n/).map(p => `<p>${p.replace(/\n/g, '<br>')}</p>`).join('');
+      
+      return html;
+    }
+
+    // --- ARTICLE HANDLING ---
+    async function openArticle(index) {
+      const article = articlesData[index];
+      
+      // Update UI Header
+      document.getElementById('read-title').textContent = article.title;
+      document.getElementById('read-author').textContent = `By ${article.author}`;
+      document.getElementById('read-category').textContent = article.category;
+      document.getElementById('read-content').innerHTML = '<p>Loading content...</p>';
+
+      // Show Reader, Hide Browse
+      browseSection.style.display = 'none';
+      articleReader.style.display = 'block';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      // Fetch txt file
+      try {
+        const response = await fetch(article.file);
+        if (!response.ok) throw new Error("File not found");
+        const textContent = await response.text();
+        
+        // Parse codes
+        document.getElementById('read-content').innerHTML = parseCustomCodes(textContent);
+        
+        // Load Giscus for this specific article
+        loadGiscus(article.title);
+      } catch (err) {
+        document.getElementById('read-content').innerHTML = `<p style="color:red">Failed to load essay from: <code>${article.file}</code>. Make sure the file exists.</p>`;
+      }
+    }
+
+    function closeArticle() {
+      browseSection.style.display = 'block';
+      articleReader.style.display = 'none';
+      // Clear Giscus to prevent multiple iframes piling up
+      document.getElementById('giscus-container').innerHTML = '';
+    }
+
+    // --- GISCUS INTEGRATION ---
+    function loadGiscus(articleTitle) {
+      const container = document.getElementById('giscus-container');
+      container.innerHTML = ''; // Clear previous
+
+      if (!configData.comments || !configData.comments.enabled) return;
+
+      const script = document.createElement('script');
+      script.src = "https://giscus.app/client.js";
+      script.setAttribute("data-repo", configData.comments.repo);
+      
+      // If you have specific repo/category IDs in config, apply them:
+      if (configData.comments.repoId) script.setAttribute("data-repo-id", configData.comments.repoId);
+      if (configData.comments.category) script.setAttribute("data-category", configData.comments.category);
+      if (configData.comments.categoryId) script.setAttribute("data-category-id", configData.comments.categoryId);
+      
+      script.setAttribute("data-mapping", "specific");
+      script.setAttribute("data-term", articleTitle); // Maps comments to the Article Title
+      script.setAttribute("data-strict", "0");
+      script.setAttribute("data-reactions-enabled", "1");
+      script.setAttribute("data-emit-metadata", "0");
+      script.setAttribute("data-input-position", "bottom");
+      script.setAttribute("data-theme", "dark");
+      script.setAttribute("data-lang", "en");
+      script.setAttribute("crossorigin", "anonymous");
+      script.async = true;
+
+      container.appendChild(script);
+    }
+
+    // --- BOOK MODAL HANDLING ---
+    const modal = document.getElementById('pdf-modal');
+    const modalFrame = document.getElementById('modal-frame');
+    
+    function openBookModal(pdfUrl, title) {
+      document.getElementById('modal-title').textContent = title;
+      
+      // Construct Google Docs Viewer URL
+      const viewerUrl = `https://docs.google.com/viewer?url=${encodeURIComponent(window.location.origin + window.location.pathname.replace('index.html', '') + pdfUrl)}&embedded=true`;
+      
+      modalFrame.src = viewerUrl;
+      
+      // Fallback for local testing
+      modalFrame.onerror = function() {
+        modalFrame.outerHTML = `<div style="padding:2rem;text-align:center;color:white;"><p>Preview unavailable locally. Please download.</p></div>`;
+      };
+      
+      const dlBtn = document.getElementById('modal-download');
+      dlBtn.href = pdfUrl;
+      dlBtn.download = title.replace(/\s+/g, '_') + '.pdf';
+      
+      modal.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeBookModal() {
+      modal.classList.remove('open');
+      modalFrame.src = '';
+      document.body.style.overflow = '';
+    }
+
+    document.getElementById('modal-close').addEventListener('click', closeBookModal);
+    modal.addEventListener('click', e => { if(e.target === modal) closeBookModal(); });
+    document.addEventListener('keydown', e => { if(e.key === 'Escape') closeBookModal(); });
+
+    // Initialize
+    window.addEventListener('DOMContentLoaded', initApp);
+
+  </script>
+</body>
+</html>
