@@ -594,9 +594,10 @@
     <div id="global-comments"></div>
   </main>
 
-  <footer class="site-footer" id="footer-text" style="display: none;">        
-    <div id="contact-info" class="contact-info" style="display: none;"></div>
-</footer>
+  <footer class="site-footer" id="footer-text" style="display: none;">
+      <div id="footer-text-content"></div>
+      <div id="contact-info" class="contact-info" style="display: none;"></div>
+  </footer>
 
   <!-- PDF Preview Modal -->
   <div class="modal-overlay" id="modal" role="dialog" aria-modal="true">
@@ -699,48 +700,48 @@
       }
 
       function populateTexts(site) {
-  document.title = site.pageTitle || site.title || 'Library';
-  document.getElementById('site-title').textContent = site.title || '';
-  document.getElementById('site-subtitle').textContent = site.subtitle || '';
-  if (site.searchPlaceholder) searchInput.placeholder = site.searchPlaceholder;
-  
-  const heroSection = document.getElementById('hero-section');
-  if (site.hero && site.hero.show !== false) {
-    heroSection.style.display = 'block';
-    document.getElementById('hero-heading').innerHTML = site.hero.heading || '';
-    document.getElementById('hero-desc').textContent = site.hero.description || '';
-  }
-  
-  // Contact in footer (uses #contact-info)
-  if (site.contact) {
-    const contactEl = document.getElementById('contact-info');
-    let html = '';
-    if (site.contact.email) {
-      html += `<a href="mailto:${site.contact.email}">📧 ${site.contact.email}</a>`;
+        document.title = site.pageTitle || site.title || 'Library';
+        document.getElementById('site-title').textContent = site.title || '';
+        document.getElementById('site-subtitle').textContent = site.subtitle || '';
+        if (site.searchPlaceholder) searchInput.placeholder = site.searchPlaceholder;
+        
+        const heroSection = document.getElementById('hero-section');
+        if (site.hero && site.hero.show !== false) {
+          heroSection.style.display = 'block';
+          document.getElementById('hero-heading').innerHTML = site.hero.heading || '';
+          document.getElementById('hero-desc').textContent = site.hero.description || '';
+        }
+        
+        // Contact in footer
+        if (site.contact) {
+          const contactEl = document.getElementById('contact-info');
+          let html = '';
+          if (site.contact.email) {
+            html += `<a href="mailto:${site.contact.email}">📧 ${site.contact.email}</a>`;
+          }
+          if (site.contact.phone) {
+            html += `<a href="tel:${site.contact.phone.replace(/\s+/g, '')}">📞 ${site.contact.phone}</a>`;
+          }
+          if (html) {
+            contactEl.innerHTML = html;
+            contactEl.style.display = 'flex';
+            contactEl.style.justifyContent = 'center';
+            contactEl.style.gap = '2rem';
+            contactEl.style.padding = '1rem 0';
+          }
+      }
+      
+      // Footer text
+      const footerEl = document.getElementById('footer-text');
+      const footerTextContent = document.getElementById('footer-text-content');
+      if (site.footer && site.footer.show !== false) {
+        footerEl.style.display = 'block';
+        footerTextContent.innerHTML = site.footer.text || '';
+      } else if (site.contact && (site.contact.email || site.contact.phone)) {
+        footerEl.style.display = 'block';
+        footerTextContent.innerHTML = '';
+      }
     }
-    if (site.contact.phone) {
-      html += `<a href="tel:${site.contact.phone.replace(/\s+/g, '')}">📞 ${site.contact.phone}</a>`;
-    }
-    if (html) {
-      contactEl.innerHTML = html;
-      contactEl.style.display = 'flex';
-      contactEl.style.justifyContent = 'center';
-      contactEl.style.gap = '2rem';
-      contactEl.style.padding = '1rem 0';
-    }
-  }
-  
-  // Inside populateTexts, after setting contact:
-  const footerEl = document.getElementById('footer-text');
-  if (site.footer && site.footer.show !== false) {
-    footerEl.style.display = 'block';
-    footerEl.innerHTML = site.footer.text || '';
-  } else if (site.contact && (site.contact.email || site.contact.phone)) {
-    // Show footer only for contact
-    footerEl.style.display = 'block';
-    footerEl.innerHTML = ''; // no text, just contact below
-  }
-}
 
       function injectGoogleAnalytics(analytics) {
         if (analytics && analytics.google_id) {
