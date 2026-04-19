@@ -659,25 +659,28 @@
       document.getElementById('read-author').textContent = `By ${article.author}`;
       document.getElementById('read-category').textContent = article.category;
       document.getElementById('read-content').innerHTML = '<p>Loading content...</p>';
-
+    
       // Show Reader, Hide Browse
       browseSection.style.display = 'none';
       articleReader.style.display = 'block';
       window.scrollTo({ top: 0, behavior: 'smooth' });
-
+    
       // Fetch txt file
       try {
         const response = await fetch(article.file);
         if (!response.ok) throw new Error("File not found");
         const textContent = await response.text();
-        
-        // Parse codes
         document.getElementById('read-content').innerHTML = parseCustomCodes(textContent);
-        
-        // Load Giscus for this specific article
-        loadGiscus(article.title);
       } catch (err) {
-        document.getElementById('read-content').innerHTML = `<p style="color:red">Failed to load essay from: <code>${article.file}</code>. Make sure the file exists.</p>`;
+        document.getElementById('read-content').innerHTML = `
+          <p style="color: #c9a84c; font-style: italic;">
+            ⚠️ The essay content could not be loaded from <code>${article.file}</code>.<br>
+            You can still read and leave comments below.
+          </p>
+        `;
+      } finally {
+        // Always load Giscus comments, even if the content failed
+        loadGiscus(article.title);
       }
     }
 
