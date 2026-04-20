@@ -235,7 +235,7 @@
 /* Tablet: 2 columns */
 @media (min-width: 640px) {
   .grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(1, 1fr);
   }
 }
 
@@ -323,20 +323,20 @@
     }
     /* Language badge (top right) */
     .language-tag {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      background: rgba(13,13,13,0.85);
-      border: 1px solid var(--border, #2a2a2a);
-      color: var(--accent, #c9a84c);
-      font-size: 0.68rem;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      padding: 3px 8px;
-      border-radius: 4px;
-      backdrop-filter: blur(6px);
-      z-index: 2;
-    }
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background: rgba(13,13,13,0.85);
+  border: 1px solid var(--border, #2a2a2a);
+  color: var(--accent, #c9a84c);
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: 3px 8px;
+  border-radius: 4px;
+  backdrop-filter: blur(6px);
+  z-index: 2;
+}
     .card-body {
       padding: 1rem 1rem 1.2rem;
       flex: 1;
