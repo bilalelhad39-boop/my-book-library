@@ -4,6 +4,7 @@ books:
     author: "S Mame Mor Mbacke Hamdy"
     description: "ترجمة العلامة الحاج امباكي بوسو"
     category: "Biography"
+    language: "French"
     thumbnail: "thumbnails/ويسألونك.png"
     file: "books/ويسألونك عن الشيخ امباكي بوسو.pdf"
 
@@ -11,6 +12,7 @@ books:
     author: "Cheikh Mbacke Bousso"
     description: "مجموعة كتابات متنوعة من إعداد سيدي بوسو مولاي"
     category: "Religion & Spirituality"
+    language: "English"
     thumbnail: "thumbnails/WhatsApp Image 2025-05-24 at 16.14.34_60d71036.jpg"
     file: "books/مجموعة من كتابات العلامة الحاج امباكي بوسو.pdf"
 
