@@ -227,7 +227,7 @@
     /* Grid & Cards – shorter cards */
 .grid {
   display: grid;
-  grid-template-columns: repeat(1, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 1.5rem;
   margin-bottom: 4rem;
 }
@@ -589,6 +589,33 @@
     @media (max-width: 380px) {
       .grid { grid-template-columns: 1fr; }
     }
+
+    /* Scrollable categories row */
+.filters {
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  overflow-y: hidden;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+  padding-bottom: 6px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: var(--accent, #c9a84c) var(--surface, #161616);
+}
+
+.filters::-webkit-scrollbar {
+  height: 4px;
+}
+.filters::-webkit-scrollbar-thumb {
+  background: var(--accent, #c9a84c);
+  border-radius: 4px;
+}
+
+.filter-btn {
+  flex-shrink: 0;
+  white-space: nowrap;
+    }
   </style>
 </head>
 <body>
@@ -734,13 +761,41 @@
           injectGlobalComments(config.comments);
           
           initCategories();
+          setTimeout(enableScrollableCategories, 100);
           renderGrid();
         } catch (error) {
           console.error('Failed to load YAML:', error);
           grid.innerHTML = `<div class="empty">Failed to load library. Check console.</div>`;
         }
       }
+function enableScrollableCategories() {
+  const filters = document.getElementById('filters');
+  if (!filters) return;
 
+  // Apply scrollable styles programmatically (optional, if CSS not already applied)
+  filters.style.display = 'flex';
+  filters.style.flexWrap = 'nowrap';
+  filters.style.overflowX = 'auto';
+  filters.style.gap = '0.5rem';
+  filters.style.paddingBottom = '6px';
+
+  // Make all filter buttons non-shrinking
+  const buttons = filters.querySelectorAll('.filter-btn');
+  buttons.forEach(btn => {
+    btn.style.flexShrink = '0';
+    btn.style.whiteSpace = 'nowrap';
+  });
+
+  // Auto‑scroll hint (only if content overflows)
+  setTimeout(() => {
+    if (filters.scrollWidth > filters.clientWidth) {
+      filters.scrollBy({ left: 80, behavior: 'smooth' });
+      setTimeout(() => {
+        filters.scrollBy({ left: -80, behavior: 'smooth' });
+      }, 600);
+    }
+  }, 800);
+}
       function applyTheme(theme) {
         if (!theme) return;
         const root = document.documentElement;
