@@ -82,32 +82,32 @@
       align-items: center;
       gap: 1rem;
     }
-    .view-toggle {
-      background: var(--surface, #161616);
-      border: 1px solid var(--border, #2a2a2a);
-      color: var(--text, #e8e0d0);
-      padding: 8px 16px;
-      border-radius: 20px;
-      font-size: 0.85rem;
-      cursor: pointer;
-      transition: transform 0.2s ease, border-color 0.2s, color 0.2s;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .view-toggle:hover {
-      border-color: var(--accent, #c9a84c);
-      color: var(--accent, #c9a84c);
-      transform: scale(1.02);
-    }
-    .view-toggle:active {
-      transform: scale(0.98);
-    }
+    
     .count-badge {
       font-size: 0.8rem;
       color: var(--muted, #7a7060);
       white-space: nowrap;
     }
+    /* Pulsing animation to draw attention */
+@keyframes gentlePulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.04); }
+  100% { transform: scale(1); }
+}
+
+.view-toggle {
+  transition: border-color 0.2s, color 0.2s, transform 0.2s;
+  animation: gentlePulse 2.5s infinite ease-in-out;
+}
+
+.view-toggle:hover {
+  transform: scale(1.06);
+  animation: none;
+}
+
+.view-toggle:active {
+  transform: scale(0.98);
+}
 
     main {
       max-width: 1280px;
